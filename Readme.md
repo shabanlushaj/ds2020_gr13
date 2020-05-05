@@ -108,8 +108,46 @@ Marresi: edon
 Dekriptimi: takimi mbahet te shtunen ne ora 18:00
 ```
 
+5. Export-key
+##### ``` export-key <public-private> <name> || [file]```
+```
+$ ds export-key private edon
+<RSAKeyValue>
+<Modulus>
+ukC4v8v7Sc0/3wvCNwsHj0tt5KsbdWhXEIZrcl1ciJ79ugcNRHl1jRrdq1Tw+vDQtEidEu4fqNE/SpY48k6cv58EPNd1uPaoFs0VOPfam2+0x0mCKor+gOoy2ayuQIJVaQGP26BuhHF4RkS2g8igcfekBTLTEWN6Pik2hmzlZx0=</Modulus>
+<Exponent>
+AQAB</Exponent>
+<P>
+5fXBaUToc43F6CXgQZQ+jAKQ+fVjR7dkLgHSKqeT02GNBXNd6Pu3MRxks215OqA02P2eW3TE+4hrjz+IHenNow==</P>
+<Q>
+z1fzntPC4l1fpdlY1olQQLmEgv/OV7M3LyHWeHxyyP6yl4z4w/bsXzgjYtt4Vy5U8tRBzzxqDm2AY31kvhnEPw==</Q>
+<DP>
+hZiixr+LtCY3RclLYY34UGrlQvI2vWFjx/6y1KkKjpFr1jDR7BrgsJ1oO31sIo0UZsPhDgzmq6LzqgMk1wwPtQ==</DP>
+<DQ>
+jofcPZM+RZOAW6bULe4Ij+W3lMG6G4lj5u9w2jRaR5bmN829eCB2jmIt2RgbWnrMBH0qnAXgtfhKKJobNZ7Kyw==</DQ>
+<InverseQ>
+LqmhYJOM81EvoxVNKZjTprOIpCyVeqZNwlG+zTC73DuA0IEuvqpbN25RBp/oHihM/FBFyM7deVXktk/Zgsu3Bw==</InverseQ>
+<D>
+T+99GxvRkoAbfH/Qb801BmPqGyzwkPgh/b6jGKdHEn+iB5gFMrEqKVAxeNnwvtJh0C4l87ztK4f6sOk+MYhZrwxCQZFWr4Wf8a4QpAuDWIwNTkmq6x44EFn0/ifJAkZWbNhy3C2fqgkWTQYiEpGijxFXlHskB8BBkQM+NxE+S0U=</D>
+</RSAKeyValue>
+```
+```
+$ ds export-key public edon edonExp
+Celesi publik u ruajt ne fajllin edonExp.pub.xml
+```
 
-
+6. Import-key
+##### ``` import-key <name> <path>```
+```
+$ ds import-key imported  C:\Users\Admin\Desktop\toImport.xml
+Celesi privat u ruajt ne fajllin ../../../keys/imported.xml
+Celesi publik u ruajt ne fajllin ../../../keys/imported.pub.xml
+```
+```
+$ ds import-key httpimport https://pastebin.com/raw/nvSFtXAd
+Celesi privat u ruajt ne fajllin ../../../keys/httpimport.xml
+Celesi publik u ruajt ne fajllin ../../../keys/httpimport.pub.xml
+```
 
 ### 1ST TASK
 
