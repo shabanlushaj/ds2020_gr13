@@ -17,7 +17,7 @@ namespace ds
 
                 RsaEncryptor rsa;
                 DirectoryInfo di = Directory.CreateDirectory(@"../../../keys/");
-
+		//Per te krijuar
                 if (command == "create-user")
                 {
                     try
