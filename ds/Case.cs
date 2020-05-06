@@ -21,6 +21,7 @@ namespace ds
                 {
                     sb.Append(inv[i].ToString().ToUpper());
                 }
+		//if upperCase convertt to lower
                 else if ((inv[i] >= 'A' && inv[i] <= 'Z') || inv[i] == ' ')
                 {
                     sb.Append(inv[i].ToString().ToLower());
