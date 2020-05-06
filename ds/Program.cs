@@ -552,7 +552,7 @@ namespace ds
                 }
                 else
                 {
-                    Console.WriteLine("Kerkesa duhet te jete: <create-user> <delete-user> <write-message> <read-message>");
+                    Console.WriteLine("Kerkesa duhet te jete: <create-user> <delete-user> <export-key> <import-key> <write-message> <read-message>");
                 }
                 /*else
 				{
