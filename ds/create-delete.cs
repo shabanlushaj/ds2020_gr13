@@ -26,7 +26,8 @@ namespace ds
         {
             return rsacsp.ToXmlString(false);
         }
-
+		
+		//private key
         public string GetPrivateKey()
         {
             return rsacsp.ToXmlString(true);
