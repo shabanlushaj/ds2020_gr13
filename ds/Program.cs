@@ -255,7 +255,8 @@ namespace ds
                     }
                 }
 
-                else if (command == "list-keys")//Komande shtese -> listimi i celesave (needs to convert from path name > name:) 
+                else if (command == "list-keys")
+		//Komande shtese -> listimi i celesave (needs to convert from path name > name:) 
                 {
 
                     Dictionary<string, string> list_keys = new Dictionary<string, string>();
@@ -273,7 +274,7 @@ namespace ds
                     }
                 }
 
-                else if (command == "write-message")
+                else if (command == "write-message")//Write message
                 {
                     string input = args[1];
 
