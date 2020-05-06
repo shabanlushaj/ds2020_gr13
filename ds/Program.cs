@@ -249,7 +249,7 @@ namespace ds
                     }
                     catch
                     {
-                        Console.WriteLine("Kerkesa duhet te jete: import-key <public|private> <name> dhe [file] opsionale");
+                        Console.WriteLine("Kerkesa duhet te jete: import-key <name> <path>");
                     }
                 }
 
