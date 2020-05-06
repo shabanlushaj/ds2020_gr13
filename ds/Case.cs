@@ -12,11 +12,11 @@ namespace ds
             return capital;
         }
         public static string Inverse(string inv)
-        {
+        {//inverse
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < inv.Length; i++)
             {
-
+		
                 if ((inv[i] >= 'a' && inv[i] <= 'z') || inv[i] == ' ')
                 {
                     sb.Append(inv[i].ToString().ToUpper());
