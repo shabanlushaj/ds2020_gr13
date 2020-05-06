@@ -4,9 +4,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace ds2
+namespace ds
 {
-    class import_key
+    class Import_key
     {
         public static string Get(string uri)
         {

@@ -30,7 +30,6 @@ namespace ds
             return Convert.ToBase64String(bciphertext);
         }
 
-        //valid key^iv size 
         public static string des_Decrypt(string ciphertext, string key, string iv)
         {
             byte[] bcptext = Convert.FromBase64String(ciphertext);
@@ -51,6 +50,7 @@ namespace ds
             return Encoding.UTF8.GetString(bdecrypted);
         }
 
+        //docs.microsoft
         public static string rsa_Encrypt(string textToEncrypt, string publicKeyString)
         {
             byte[] bytesToEncrypt = Encoding.UTF8.GetBytes(textToEncrypt);
