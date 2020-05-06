@@ -58,7 +58,7 @@ namespace ds
                         }
                     }
                     catch
-                    {
+                    {//Ne rast se komanda eshte gabim
                         Console.WriteLine("Kerkesa duhet te jete: create-user <emri>");
                         return;
                     }
