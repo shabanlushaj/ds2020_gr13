@@ -27,7 +27,7 @@ namespace ds
                             string command2 = args[1];
                             StringBuilder sb = new StringBuilder();
                             for (int i = 0; i < command2.Length; i++)
-                            {
+                            {//Numra ,shkronja dhe _
                                 if ((command2[i] >= '0' && command2[i] <= '9') || (command2[i] >= 'A' && command2[i] <= 'Z') || (command2[i] >= 'a' && command2[i] <= 'z') || command2[i] == '_')
                                 {
                                     sb.Append(command2[i].ToString());
