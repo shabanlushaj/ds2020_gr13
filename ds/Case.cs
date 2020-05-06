@@ -16,7 +16,7 @@ namespace ds
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < inv.Length; i++)
             {
-		
+		//if lowerCase convert to upper
                 if ((inv[i] >= 'a' && inv[i] <= 'z') || inv[i] == ' ')
                 {
                     sb.Append(inv[i].ToString().ToUpper());
