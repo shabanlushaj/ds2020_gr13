@@ -106,6 +106,10 @@ Mesazhi i enkriptuar u ruajt ne fajllin: files/edon.txt
 $ ds read-message ZWRvbg==.aUZsRUw1ZWVzOGM9.hxuqnLr1pZz43JokZu0UTfeM7aFOVH/yUVOoz9ksTWXBodWJko2YDhiHvKRCSTvpPumKqZU7lUJI98BzV6ZlM8azC2TaHp1lRpM4OBm0vUtyxzSjoELKePJcnCqGPRpK4lM6IHHd8BgaOm1UJFPwKF47Meu09PEBkfDmPHIWeVg=.taWPUz0ks2LWTc6RrRBesYDiTxGymgti1bMxuZTWZB5/RxxFz9Q+qQ==
 Marresi: edon
 Dekriptimi: takimi mbahet te shtunen ne ora 18:00
+
+$ ds read-message "C:\Users\Admin\Desktop\SIGURIA_DHENAVE\ds\files\edon.txt"
+Marresi: edon
+Dekriptimi: takohemi neser
 ```
 
 5. Export-key
