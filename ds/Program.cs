@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-//Programi
+
 namespace ds
 {
 	class Program
@@ -17,7 +17,7 @@ namespace ds
 
                 RsaEncryptor rsa;
                 DirectoryInfo di = Directory.CreateDirectory(@"../../../keys/");
-		//Per te krijuar
+
                 if (command == "create-user")
                 {
                     try
@@ -27,7 +27,7 @@ namespace ds
                             string command2 = args[1];
                             StringBuilder sb = new StringBuilder();
                             for (int i = 0; i < command2.Length; i++)
-                            {//Numra ,shkronja dhe _
+                            {
                                 if ((command2[i] >= '0' && command2[i] <= '9') || (command2[i] >= 'A' && command2[i] <= 'Z') || (command2[i] >= 'a' && command2[i] <= 'z') || command2[i] == '_')
                                 {
                                     sb.Append(command2[i].ToString());
@@ -58,12 +58,12 @@ namespace ds
                         }
                     }
                     catch
-                    {//Ne rast se komanda eshte gabim
+                    {
                         Console.WriteLine("Kerkesa duhet te jete: create-user <emri>");
                         return;
                     }
                 }
-			//Per te fshire userin
+
                 else if (command == "delete-user")
                 {
                     try
@@ -73,7 +73,7 @@ namespace ds
                             string command2 = args[1];
                             StringBuilder sb = new StringBuilder();
                             for (int i = 0; i < command2.Length; i++)
-                            {//Vetem Numra,Shkronja dhe _
+                            {
                                 if ((command2[i] >= '0' && command2[i] <= '9') || (command2[i] >= 'A' && command2[i] <= 'Z') || (command2[i] >= 'a' && command2[i] <= 'z') || command2[i] == '_')
                                 {
                                     sb.Append(command2[i].ToString());
@@ -105,14 +105,13 @@ namespace ds
 
                     }
                     catch
-                    {//Ne rast se komanda eshte dhene gabim
+                    {
                         Console.WriteLine("Kerkesa duhet te jete: delete-user <emri>");
                         return;
 
                     }
                 }
                 else if (command == "export-key")
-			//eksportimi i qelesit
                 {
                     try
                     {
@@ -196,7 +195,7 @@ namespace ds
                         Console.WriteLine("Kerkesa duhet te jete: export-key <public|private> <name> dhe [file] opsionale");
                     }
                 }
-                else if (command == "import-key")//Importimi i qelesit
+                else if (command == "import-key")
                 {
                     try
                     {
@@ -255,8 +254,7 @@ namespace ds
                     }
                 }
 
-                else if (command == "list-keys")
-		//Komande shtese -> listimi i celesave (needs to convert from path name > name:) 
+                else if (command == "list-keys")//Komande shtese -> listimi i celesave (needs to convert from path name > name:) 
                 {
 
                     Dictionary<string, string> list_keys = new Dictionary<string, string>();
@@ -274,7 +272,7 @@ namespace ds
                     }
                 }
 
-                else if (command == "write-message")//Write message
+                else if (command == "write-message")
                 {
                     string input = args[1];
 
@@ -303,7 +301,7 @@ namespace ds
                             DirectoryInfo di2 = Directory.CreateDirectory(@"../../../files/");
                             using (StreamWriter sw = File.CreateText(di2 + file)) ;
 
-                            string g = ("\n" + WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
+                            string g = (WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
                             File.WriteAllText(di2 + file, g);
 
                             Console.WriteLine("Mesazhi i enkriptuar u ruajt ne fajllin: files/{0}", file);
@@ -319,10 +317,10 @@ namespace ds
                         Console.WriteLine("Celesi publik: {0} nuk ekziston ", input);
                     }
                 }
-                else if (command == "read-message")//Read message
+                else if (command == "read-message")
                 {
                     string cipher = args[1];
-                    if (Regex.Matches(stringinput, @"\.").Count == 4)
+                    if (Regex.Matches(cipher, @"\.").Count == 3)
                     {
                         var array = cipher.Split(new[] { '.' }, 4);
 
@@ -374,20 +372,67 @@ namespace ds
                         {
                             Console.WriteLine("Nuk eshte Base64!");
                         }
+                    }
+                    else if (File.Exists(cipher))
+                    {
+                        string content = File.ReadAllText(cipher);
+                        if (Regex.Matches(content, @"\.").Count == 3)
+                        {
+                            var array = content.Split(new[] { '.' }, 4);
+                            string firstElem = array[0];
+                            string second = array[1];
+                            string third = array[2];
+                            string fourth = array[3];
+                            if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
+                            {
+                                string input = WR.Base64Decode(firstElem);
+                                string privkey = di + input + ".xml";
 
+                                if (File.Exists(privkey))
+                                {
+                                    Console.WriteLine("Marresi: " + input);
+                                    string privateKey = File.ReadAllText(di + input + ".xml");
+                                    try
+                                    {
+                                        string iv_get = WR.Base64Decode(second);
+                                        try
+                                        {
+                                            string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
+                                            try
+                                            {
+                                                Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
+                                            }
+                                            catch (Exception)
+                                            {
+                                                Console.WriteLine("Error: {0}");
+                                            }
+                                        }
+                                        catch (CryptographicException e)
+                                        {
+                                            Console.WriteLine("Dekriptimi nuk mund te behet me celesin e dhene");
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("IV nuk eshte e njejte me ate te enkriptimit!");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Nuk eshte Base64!");
+                            }
 
+                        }
                     }
                     else
-                    {
-                        //implement for filepath
-                    }
+                        Console.WriteLine("Provide valid args!");
                 }
                 //FAZA 1
-//=================================================================================
-//=================================================================================
-//=================================================================================
-//=================================================================================
-//=================================================================================
                 else if (command == "four-square")
                 {
                     try
@@ -510,10 +555,10 @@ namespace ds
                 {
                     Console.WriteLine("Kerkesa duhet te jete: <create-user> <delete-user> <write-message> <read-message>");
                 }
-                //else
-			//	{
-			//		Console.WriteLine("You should provide a valid METHOD: <four-square> <case> <rail-fence>");
-			//	}*/
+                /*else
+				{
+					Console.WriteLine("You should provide a valid METHOD: <four-square> <case> <rail-fence>");
+				}*/
 			}
 		}
 	}
