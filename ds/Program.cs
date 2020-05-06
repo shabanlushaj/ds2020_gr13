@@ -510,10 +510,10 @@ namespace ds
                 {
                     Console.WriteLine("Kerkesa duhet te jete: <create-user> <delete-user> <write-message> <read-message>");
                 }
-                /*else
-				{
-					Console.WriteLine("You should provide a valid METHOD: <four-square> <case> <rail-fence>");
-				}*/
+                //else
+			//	{
+			//		Console.WriteLine("You should provide a valid METHOD: <four-square> <case> <rail-fence>");
+			//	}*/
 			}
 		}
 	}
