@@ -105,7 +105,7 @@ namespace ds
 
                     }
                     catch
-                    {
+                    {//Ne rast se komanda eshte dhene gabim
                         Console.WriteLine("Kerkesa duhet te jete: delete-user <emri>");
                         return;
 
