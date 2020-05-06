@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace ds
 {
@@ -249,7 +250,7 @@ namespace ds
                     }
                     catch
                     {
-                        Console.WriteLine("Kerkesa duhet te jete: import-key <name> <path>");
+                        Console.WriteLine("Kerkesa duhet te jete: import-key <public|private> <name> dhe [file] opsionale");
                     }
                 }
 
@@ -319,7 +320,7 @@ namespace ds
                 else if (command == "read-message")
                 {
                     string cipher = args[1];
-                    try
+                    if (Regex.Matches(stringinput, @"\.").Count == 4)
                     {
                         var array = cipher.Split(new[] { '.' }, 4);
 
@@ -374,9 +375,9 @@ namespace ds
 
 
                     }
-                    catch (Exception)
+                    else
                     {
-                        Console.WriteLine("Mesazhi i dhene nuk permban njeren nga parametrat <name> <iv> <key> <message>");
+                        //implement for filepath
                     }
                 }
                 //FAZA 1
