@@ -196,7 +196,7 @@ namespace ds
                         Console.WriteLine("Kerkesa duhet te jete: export-key <public|private> <name> dhe [file] opsionale");
                     }
                 }
-                else if (command == "import-key")
+                else if (command == "import-key")//Importimi i qelesit
                 {
                     try
                     {
