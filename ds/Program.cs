@@ -63,7 +63,7 @@ namespace ds
                         return;
                     }
                 }
-
+			//Per te fshire userin
                 else if (command == "delete-user")
                 {
                     try
