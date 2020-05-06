@@ -37,7 +37,7 @@ Run program:
 OR
 
 
-If you have VISUAL STUDIO IDE installed, you can simply open ds2.sln and run.
+If you have VISUAL STUDIO IDE installed, you can simply open ```ds.sln``` and run.
 
 This procedure installs the program.
 
@@ -57,59 +57,61 @@ create an alias to call it simplier:
 ```$ alias ds=./ds.exe```
 
 
-1.Generates a pair of private and public keys. XML-format
+1. Generates a pair of private and public keys. XML-format
 
 ##### ```<create-user> <user-name>```
 
 ```
 $ ds create-user edon
-Eshte krijua celsi privat 'C:\Users\Admin\Desktop\GIT\siguri-grup\ds2\keys\edon.xml'
-Eshte krijua celsi publik 'C:\Users\Admin\Desktop\GIT\siguri-grup\ds2\keys\edon.pub.xml'
+Eshte krijuar celsi privat: 'keys/edon.xml'
+Eshte krijuar celsi publik: 'keys/edon.pub.xml'
 
 $ ds create-user edon
 Gabim: Celesi 'edon' ekziston paraprakisht.
 ```
 
 
-2.Deletes a pair of private and public keys.
+2. Deletes a pair of private and public keys.
 
 ##### ```<delete-user> <user-name>```
 
 ```
 $ ds delete-user edon
-Eshte larguar celsi privat 'C:\Users\Admin\Desktop\GIT\siguri-grup\ds2\keys\edon.xml'
-Eshte larguar celsi publik 'C:\Users\Admin\Desktop\GIT\siguri-grup\ds2\keys\edon.pub.xml'
+Eshte larguar celsi privat: 'keys/edon.xml'
+Eshte larguar celsi publik: 'keys/edon.pub.xml'
 
 $ ds delete-user edon
 Gabim: Celesi 'edon' nuk ekziston.
 ```
 
 
-3.Encrypts a message with users public key.
+3. Encrypts a message with users public key.
 
 ##### ```<write-message> <user-name> <text> || [file]```
 
 ```
 $ ds write-message edon "takimi mbahet te shtunen ne ora 18:00"
-ZWRvbg==.eGhzRTJQOHNpUHM9.WcFmEuCCR7OT0+ruicyzIsti9SIJxFfyBN4NE2gLpiQmJaZ/YobmsAmVZZ43zDhOqm0mJWZImuVt3KWuJz5mDLHJM31ygSTHMCk71qbku5Zce/Rhbm/4zj+iWk4oSLNG2YvYGrZuzjFAkQx/ByqGJp4SrfsOa0yYRHwTfP4vc1I=.WHQ0dQLWCw88UVUmA+PXfM8XdWP9UA8esyZetY6Kj66i3Q6UfGr3hw==
+ZWRvbg==.aUZsRUw1ZWVzOGM9.hxuqnLr1pZz43JokZu0UTfeM7aFOVH/yUVOoz9ksTWXBodWJko2YDhiHvKRCSTvpPumKqZU7lUJI98BzV6ZlM8azC2TaHp1lRpM4OBm0vUtyxzSjoELKePJcnCqGPRpK4lM6IHHd8BgaOm1UJFPwKF47Meu09PEBkfDmPHIWeVg=.taWPUz0ks2LWTc6RrRBesYDiTxGymgti1bMxuZTWZB5/RxxFz9Q+qQ==
 
 $ ds write-message edon "takimi mbahet te shtunen ne ora 18:00" edon.txt
-Mesazhi i enkriptuar u ruajt ne fajllin: C:\Users\Admin\Desktop\GIT\siguri-grup\ds2\files\edon.txt
+Mesazhi i enkriptuar u ruajt ne fajllin: files/edon.txt
 ```
 
 
-4.Decrypts a message with users private key.
+4. Decrypts a message with users private key.
 
 ##### ```<read-message> <text>```
 
 ```
-$ ds read-message ZWRvbg==.MDcyNEZFQkVkN289.HD+ysRnA9e2XmU3Vp6tqVx0ADE9f5tK/R9r+BZTuafsCanNEXZycuZq+cj08I8Cca5HOnR+vC+xXw9C9eMCThPYcpCUJgIr6kNg5X6wiXy6cpRwDIW4SYX5Y3bUYUrX5DrEjU3ItI4bPNGfTioR2IOQpPzI1R9G5LxMTnZ+XFrg=.wjHudyaDQ82FH4xj0g6E9Xgttct3X3j4A4RelSuarbcMAetUyxgiQQ==
+$ ds read-message ZWRvbg==.aUZsRUw1ZWVzOGM9.hxuqnLr1pZz43JokZu0UTfeM7aFOVH/yUVOoz9ksTWXBodWJko2YDhiHvKRCSTvpPumKqZU7lUJI98BzV6ZlM8azC2TaHp1lRpM4OBm0vUtyxzSjoELKePJcnCqGPRpK4lM6IHHd8BgaOm1UJFPwKF47Meu09PEBkfDmPHIWeVg=.taWPUz0ks2LWTc6RrRBesYDiTxGymgti1bMxuZTWZB5/RxxFz9Q+qQ==
 Marresi: edon
 Dekriptimi: takimi mbahet te shtunen ne ora 18:00
 ```
 
 5. Export-key
+
 ##### ``` export-key <public-private> <name> || [file]```
+
 ```
 $ ds export-key private edon
 <RSAKeyValue>
@@ -131,23 +133,32 @@ LqmhYJOM81EvoxVNKZjTprOIpCyVeqZNwlG+zTC73DuA0IEuvqpbN25RBp/oHihM/FBFyM7deVXktk/Z
 T+99GxvRkoAbfH/Qb801BmPqGyzwkPgh/b6jGKdHEn+iB5gFMrEqKVAxeNnwvtJh0C4l87ztK4f6sOk+MYhZrwxCQZFWr4Wf8a4QpAuDWIwNTkmq6x44EFn0/ifJAkZWbNhy3C2fqgkWTQYiEpGijxFXlHskB8BBkQM+NxE+S0U=</D>
 </RSAKeyValue>
 ```
+
 ```
 $ ds export-key public edon edonExp
 Celesi publik u ruajt ne fajllin edonExp.pub.xml
 ```
 
 6. Import-key
+
 ##### ``` import-key <name> <path>```
+
 ```
 $ ds import-key imported  C:\Users\Admin\Desktop\toImport.xml
 Celesi privat u ruajt ne fajllin ../../../keys/imported.xml
 Celesi publik u ruajt ne fajllin ../../../keys/imported.pub.xml
 ```
+
 ```
 $ ds import-key httpimport https://pastebin.com/raw/nvSFtXAd
 Celesi privat u ruajt ne fajllin ../../../keys/httpimport.xml
 Celesi publik u ruajt ne fajllin ../../../keys/httpimport.pub.xml
 ```
+
+7. List - keys //shtese
+
+##### ```$ ds list-keys```
+
 
 ### 1ST TASK
 

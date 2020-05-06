@@ -52,7 +52,7 @@ namespace ds
                             File.WriteAllText(di + command2 + ".pub.xml", publicKey);
 
                             Console.WriteLine("Eshte krijuar celsi privat: 'keys/{0}.xml'", command2);
-                            Console.WriteLine("Eshte krijuar celsi publik: 'keys/{0}.pub.xml'",command2);
+                            Console.WriteLine("Eshte krijuar celsi publik: 'keys/{0}.pub.xml'", command2);
 
                         }
                     }
@@ -62,7 +62,7 @@ namespace ds
                         return;
                     }
                 }
-                
+
                 else if (command == "delete-user")
                 {
                     try
@@ -94,7 +94,7 @@ namespace ds
                                 File.Delete(privkey);
                                 File.Delete(pubkey);
                                 Console.WriteLine("Eshte larguar celsi privat: 'keys/{0}.xml'", command2);
-                                Console.WriteLine("Eshte larguar celsi publik: 'keys/{0}.pub.xml'",command2);
+                                Console.WriteLine("Eshte larguar celsi publik: 'keys/{0}.pub.xml'", command2);
                             }
                             else
                             {
@@ -121,7 +121,7 @@ namespace ds
                             //DirectoryInfo dir = Directory.CreateDirectory("keys/");
                             //We have di for directory $top.
                             string privKeysDir = /*dir*/ di + name + ".xml";
-                            string pubKeysDir = /*dir*/di +name + ".pub.xml";
+                            string pubKeysDir = /*dir*/di + name + ".pub.xml";
                             if (File.Exists(pubKeysDir) && File.Exists(privKeysDir))
                             {
                                 if (args.Length == 3)
@@ -134,12 +134,11 @@ namespace ds
                                         foreach(String s in strlist){Console.Write(s + ">"); Console.WriteLine();}
 
                                     }*/
-				if (type == "public")
+                                    if (type == "public")
                                     {
                                         string publicKey = File.ReadAllText(/*dir*/ di + name + ".pub.xml");
                                         publicKey = publicKey.Replace(">", ">" + System.Environment.NewLine);
                                         Console.WriteLine("\n" + publicKey + "\n");
-
                                     }
                                     else if (type == "private")
                                     {
@@ -158,7 +157,7 @@ namespace ds
                                     Console.WriteLine("Celesi publik u ruajt ne fajllin " + expFile + ".xml");
                                 }
                             }
-                            else if(File.Exists(pubKeysDir) && !File.Exists(privKeysDir))
+                            else if (File.Exists(pubKeysDir) && !File.Exists(privKeysDir))
                             {
 
                                 if (args.Length == 3)
@@ -186,9 +185,9 @@ namespace ds
                             }
                             else
                             {
-                                Console.WriteLine("Gabim: Celesi publik " + name +" nuk ekziston.");
+                                Console.WriteLine("Gabim: Celesi publik " + name + " nuk ekziston.");
                             }
-                        
+
                         }
                     }
                     catch
@@ -196,7 +195,7 @@ namespace ds
                         Console.WriteLine("Kerkesa duhet te jete: export-key <public|private> <name> dhe [file] opsionale");
                     }
                 }
-                
+
                 else if (command == "list-keys")//Komande shtese -> listimi i celesave (needs to convert from path name > name:) 
                 {
 
@@ -238,7 +237,7 @@ namespace ds
                         }
                         else if (args.Length == 4)
                         {
-                             string publicKey = File.ReadAllText(di + input + ".pub.xml");
+                            string publicKey = File.ReadAllText(di + input + ".pub.xml");
                             string tekst = args[2];
                             string file = args[3];
                             DirectoryInfo di2 = Directory.CreateDirectory(@"../../../files/");
@@ -257,183 +256,192 @@ namespace ds
                     }
                     else
                     {
-                        Console.WriteLine("Celesi publik: {0} nuk ekziston " , input);
+                        Console.WriteLine("Celesi publik: {0} nuk ekziston ", input);
                     }
                 }
                 else if (command == "read-message")
                 {
                     string cipher = args[1];
-                    var array = cipher.Split(new[] { '.' }, 4);
-
-                    string firstElem = array[0];
-                    string second = array[1];
-                    string third = array[2];
-                    string fourth = array[3];
-                    if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
+                    try
                     {
-                        string input = WR.Base64Decode(firstElem);
-                        string privkey = di + input + ".xml";
+                        var array = cipher.Split(new[] { '.' }, 4);
 
-                        if (File.Exists(privkey))
+                        string firstElem = array[0];
+                        string second = array[1];
+                        string third = array[2];
+                        string fourth = array[3];
+                        if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
                         {
-                            Console.WriteLine("Marresi: " + input);
-                            string privateKey = File.ReadAllText(di + input + ".xml");
-                            try
+                            string input = WR.Base64Decode(firstElem);
+                            string privkey = di + input + ".xml";
+
+                            if (File.Exists(privkey))
                             {
-                                string iv_get = WR.Base64Decode(second);
+                                Console.WriteLine("Marresi: " + input);
+                                string privateKey = File.ReadAllText(di + input + ".xml");
                                 try
                                 {
-                                    string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
+                                    string iv_get = WR.Base64Decode(second);
                                     try
                                     {
-                                        Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
+                                        string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
+                                        try
+                                        {
+                                            Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
+                                        }
+                                        catch (Exception)
+                                        {
+                                            Console.WriteLine("Error: {0}");
+
+                                        }
                                     }
-                                    catch (Exception)
-                                    {                              
-                                        Console.WriteLine("Error: {0}");
-                                        
+                                    catch (CryptographicException e)
+                                    {
+                                        Console.WriteLine("Dekriptimi nuk mund te behet me celesin e dhene");
                                     }
                                 }
                                 catch (Exception e)
-                                {                              
-                                    Console.WriteLine("Error: {0}",e);                
-                                }           
+                                {
+                                    Console.WriteLine("IV nuk eshte e njejte me ate te enkriptimit!");
+                                }
                             }
-                            catch (Exception e)
-                            {                              
-                                Console.WriteLine("Error: {0}",e);                    
+                            else
+                            {
+                                Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
+                            Console.WriteLine("Nuk eshte Base64!");
                         }
+
+
                     }
-                    else
+                    catch (Exception)
                     {
-                        Console.WriteLine("Nuk eshte Base64!");
+                        Console.WriteLine("Mesazhi i dhene nuk permban njeren nga parametrat <name> <iv> <key> <message>");
                     }
                 }
                 //FAZA 1
-				else if (command=="four-square")
-				{
-					try
-					{
-						if (args[1] == "encrypt")
-						{
-							try
-							{
-								string plaintext = args[2];
-								string key1 = args[3];
-								string key2 = args[4];
-								Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
-							}
+                else if (command == "four-square")
+                {
+                    try
+                    {
+                        if (args[1] == "encrypt")
+                        {
+                            try
+                            {
+                                string plaintext = args[2];
+                                string key1 = args[3];
+                                string key2 = args[4];
+                                Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
+                            }
 
-							catch (Exception)
-							{
-								Console.WriteLine("You should put arguments in this order: <plaintext> <key1> <key2>" +
-									"\nIf plaintext is a sentence, put them in \"\", key must be one word and contain only letters!");
-							}
-						}
-						else if (args[1] == "decrypt")
-						{
-							try
-							{
-								string ciphertext = args[2];
-								string key1 = args[3];
-								string key2 = args[4];
-								Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
-							}
+                            catch (Exception)
+                            {
+                                Console.WriteLine("You should put arguments in this order: <plaintext> <key1> <key2>" +
+                                    "\nIf plaintext is a sentence, put them in \"\", key must be one word and contain only letters!");
+                            }
+                        }
+                        else if (args[1] == "decrypt")
+                        {
+                            try
+                            {
+                                string ciphertext = args[2];
+                                string key1 = args[3];
+                                string key2 = args[4];
+                                Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
+                            }
 
-							catch (Exception)
-							{
-								Console.WriteLine("You should put arguments in this order: <ciphertext> <key1> <key2>");
-							}
-						}
-						else
-						{
-							Console.WriteLine("Your command should be: <encrypt> or <decrypt> ");
-						}
-					}
-					catch (Exception)
-					{
-						Console.WriteLine("COMMANDS: <encrypt> <decrypt>");
-					}
-				}
+                            catch (Exception)
+                            {
+                                Console.WriteLine("You should put arguments in this order: <ciphertext> <key1> <key2>");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Your command should be: <encrypt> or <decrypt> ");
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("COMMANDS: <encrypt> <decrypt>");
+                    }
+                }
 
-				else if (command == "case")
-				{
-					try
-					{
-						if (args[1] == "lower")
-						{
-							string word = args[2];
-							Console.WriteLine(word.ToLower());
-						}
-						else if (args[1] == "upper")
-						{
-							string word = args[2];
-							Console.WriteLine(word.ToUpper());
-						}
-						else if (args[1] == "capitalize")
-						{
-							string word = args[2];
-							Console.WriteLine(CASE.Capitalize(word));
-						}
-						else if (args[1] == "inverse")
-						{
-							string word = args[2];
-							Console.WriteLine(CASE.Inverse(word));
-						}
-						else if (args[1] == "alternating")
-						{
-							string word = args[2];
-							Console.WriteLine(CASE.Alternating(word));
-						}
-						else if (args[1] == "sentence")
-						{
-							string a = args[2];
-							Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CASE.Str4(a) + ".\n" + CASE.Str5(a) + ", " + a.ToLower() + ". " + CASE.Str7(a) + "! " + CASE.Str8(a) + ".");
-						}
-						else
-							Console.WriteLine("Your command was wrong, choice one of the cases: <lower> <upper> <capitalize> <inverse> <alternating> <sentence>");
-					}
-					catch (Exception)
-					{
-						Console.WriteLine("CASES: <lower> <upper> <capitalize> <inverse> <alternating> <sentence> ");
-					}
-				}
-				else if (command == "rail-fence")
-				{
-					try
-					{
-						if (args[1] == "encrypt")
-						{
-							string plaint = args[2];
-							string rail = args[3];
-							int railsNr = Int32.Parse(rail);
-							Console.WriteLine(RF.Rencode(plaint, railsNr));
-						}
-						else if (args[1] == "decrypt")
-						{
-							string ciphert = args[2];
-							string rail = args[3];
-							int railsNr = Int32.Parse(rail);
-							Console.WriteLine(RF.Rdecode(ciphert, railsNr));
-						}
-						else
-						{
-							Console.WriteLine("You must choose beetwen: <encrypt> <decrypt>");
-						}
+                else if (command == "case")
+                {
+                    try
+                    {
+                        if (args[1] == "lower")
+                        {
+                            string word = args[2];
+                            Console.WriteLine(word.ToLower());
+                        }
+                        else if (args[1] == "upper")
+                        {
+                            string word = args[2];
+                            Console.WriteLine(word.ToUpper());
+                        }
+                        else if (args[1] == "capitalize")
+                        {
+                            string word = args[2];
+                            Console.WriteLine(CASE.Capitalize(word));
+                        }
+                        else if (args[1] == "inverse")
+                        {
+                            string word = args[2];
+                            Console.WriteLine(CASE.Inverse(word));
+                        }
+                        else if (args[1] == "alternating")
+                        {
+                            string word = args[2];
+                            Console.WriteLine(CASE.Alternating(word));
+                        }
+                        else if (args[1] == "sentence")
+                        {
+                            string a = args[2];
+                            Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CASE.Str4(a) + ".\n" + CASE.Str5(a) + ", " + a.ToLower() + ". " + CASE.Str7(a) + "! " + CASE.Str8(a) + ".");
+                        }
+                        else
+                            Console.WriteLine("Your command was wrong, choice one of the cases: <lower> <upper> <capitalize> <inverse> <alternating> <sentence>");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CASES: <lower> <upper> <capitalize> <inverse> <alternating> <sentence> ");
+                    }
+                }
+                else if (command == "rail-fence")
+                {
+                    try
+                    {
+                        if (args[1] == "encrypt")
+                        {
+                            string plaint = args[2];
+                            string rail = args[3];
+                            int railsNr = Int32.Parse(rail);
+                            Console.WriteLine(RF.Rencode(plaint, railsNr));
+                        }
+                        else if (args[1] == "decrypt")
+                        {
+                            string ciphert = args[2];
+                            string rail = args[3];
+                            int railsNr = Int32.Parse(rail);
+                            Console.WriteLine(RF.Rdecode(ciphert, railsNr));
+                        }
+                        else
+                        {
+                            Console.WriteLine("You must choose beetwen: <encrypt> <decrypt>");
+                        }
 
 
-					}
-					catch (Exception)
-					{
-						Console.WriteLine("Continue: <plaintext> <rails>");
-					}
-				}
-				else
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Continue: <plaintext> <rails>");
+                    }
+                }
+                else
                 {
                     Console.WriteLine("Kerkesa duhet te jete: <create-user> <delete-user> <write-message> <read-message>");
                 }
@@ -445,5 +453,3 @@ namespace ds
 		}
 	}
 }
-
-//file paths to be renewed & and defensive code on wm 
