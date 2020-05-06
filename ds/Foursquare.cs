@@ -98,7 +98,7 @@ namespace ds
 			int message_length = message.Length;
 
 
-			if (message_length % 2 == 1)
+			if (message_length % 2 == 1)//id message_length% 2 == 1
 			{
 				message += "x";
 			}
