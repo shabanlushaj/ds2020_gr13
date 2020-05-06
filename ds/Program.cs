@@ -112,6 +112,7 @@ namespace ds
                     }
                 }
                 else if (command == "export-key")
+			//eksportimi i qelesit
                 {
                     try
                     {
