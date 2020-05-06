@@ -319,7 +319,7 @@ namespace ds
                         Console.WriteLine("Celesi publik: {0} nuk ekziston ", input);
                     }
                 }
-                else if (command == "read-message")
+                else if (command == "read-message")//Read message
                 {
                     string cipher = args[1];
                     if (Regex.Matches(stringinput, @"\.").Count == 4)
