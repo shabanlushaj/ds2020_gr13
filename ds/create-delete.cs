@@ -21,7 +21,7 @@ namespace ds
             rsacsp = new RSACryptoServiceProvider();
             rsacsp.FromXmlString(privateKey);
         }
-
+		//public key
         public string GetPublicKey()
         {
             return rsacsp.ToXmlString(false);
