@@ -143,12 +143,11 @@ namespace ds
                                 {
                                     string expFile = args[3];
                                     DirectoryInfo expDir = Directory.CreateDirectory("exported/");
-                                    using (StreamWriter strw = File.CreateText(expDir + expFile)) ;//
                                     string publicKey = File.ReadAllText(di + name + ".pub.xml");
                                     string privateKey = File.ReadAllText(di + name + ".xml");
                                     if (type == "private")
                                     {
-                                        File.WriteAllText(expDir + expFile, privateKey);
+                                        File.WriteAllText(expDir + expFile + ".xml", privateKey);
                                         Console.WriteLine("Celesi privat u ruajt ne fajllin " + expFile + ".xml");
                                     }
                                     else if (type == "public")
@@ -244,13 +243,13 @@ namespace ds
                                     }
                                 }
                                 else
-                                    Console.WriteLine("Gabim: Fajlli " + name + " nuk ekziston.");
+                                    Console.WriteLine("Gabim: Fajlli " + path + " nuk ekziston.");
                             }
                         }
                     }
                     catch
                     {
-                        Console.WriteLine("Kerkesa duhet te jete: import-key <public|private> <name> dhe [file] opsionale");
+                        Console.WriteLine("Kerkesa duhet te jete: import-key <name> <path>");
                     }
                 }
 
