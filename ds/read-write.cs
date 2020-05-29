@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,8 +15,8 @@ namespace ds
 
             objDES.Key = Convert.FromBase64String(key);
             objDES.IV = Convert.FromBase64String(iv);
-            objDES.Padding = PaddingMode.Zeros;
-            objDES.Mode = CipherMode.ECB;
+            objDES.Padding = PaddingMode.PKCS7;
+            objDES.Mode = CipherMode.CBC;
 
 
             MemoryStream ms = new MemoryStream();
@@ -37,8 +35,8 @@ namespace ds
             DESCryptoServiceProvider objDES = new DESCryptoServiceProvider();
             objDES.Key = Convert.FromBase64String(key);
             objDES.IV = Convert.FromBase64String(iv);
-            objDES.Padding = PaddingMode.Zeros;
-            objDES.Mode = CipherMode.ECB;
+            objDES.Padding = PaddingMode.PKCS7;
+            objDES.Mode = CipherMode.CBC;
 
             MemoryStream ms = new MemoryStream(bcptext);
             byte[] bdecrypted = new byte[ms.Length];
@@ -55,45 +53,31 @@ namespace ds
         {
             byte[] bytesToEncrypt = Encoding.UTF8.GetBytes(textToEncrypt);
             var rsa = new RSACryptoServiceProvider();
-
-            try
-            {
-                rsa.FromXmlString(publicKeyString.ToString());
-                byte[] encryptedData = rsa.Encrypt(bytesToEncrypt, true);
-                string base64Encrypted = Convert.ToBase64String(encryptedData);
-                return base64Encrypted;
-            }
-
-            finally
-            {
-                rsa.PersistKeyInCsp = false;
-            }
-            
+         
+            rsa.FromXmlString(publicKeyString.ToString());
+            byte[] encryptedData = rsa.Encrypt(bytesToEncrypt, true);
+            string base64Encrypted = Convert.ToBase64String(encryptedData);
+            return base64Encrypted;
         }
+
         public static string rsa_Decrypt(string textToDecrypt, string privateKeyString)
         {
             byte[] bytesToDecrypt = Encoding.UTF8.GetBytes(textToDecrypt);
-            using (var rsa = new RSACryptoServiceProvider())
-            {
-                try
-                {
-                    rsa.FromXmlString(privateKeyString);
-                    byte[] resultBytes = Convert.FromBase64String(textToDecrypt);
-                    byte[] decryptedBytes = rsa.Decrypt(resultBytes, true); //
-                    string decryptedData = Encoding.UTF8.GetString(decryptedBytes);
-                    return decryptedData;
-                }
-                finally
-                {
-                    rsa.PersistKeyInCsp = false;
-                }
-            }
+            var rsa = new RSACryptoServiceProvider();
+
+            rsa.FromXmlString(privateKeyString);
+            byte[] resultBytes = Convert.FromBase64String(textToDecrypt);
+            byte[] decryptedBytes = rsa.Decrypt(resultBytes, true); //
+            string decryptedData = Encoding.UTF8.GetString(decryptedBytes);
+            return decryptedData;
         }
+
         public static string Base64Encode(string plaintext)
         {
             var plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
             return Convert.ToBase64String(plaintextBytes);
         }
+
         public static string Base64Decode(string plaintext)
         {
             var plaintextBytes = Convert.FromBase64String(plaintext);
@@ -104,7 +88,6 @@ namespace ds
         {
             check = check.Trim();
             return (check.Length % 4 == 0) && Regex.IsMatch(check, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
-
         }
     }
 }

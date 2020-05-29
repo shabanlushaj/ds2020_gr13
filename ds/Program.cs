@@ -274,13 +274,11 @@ namespace ds
                 else if (command == "write-message")
                 {
                     string input = args[1];
-
                     string pubkey = di + input + ".pub.xml";
                     DESCryptoServiceProvider objDes = new DESCryptoServiceProvider();
 
                     string randKey = Convert.ToBase64String(objDes.Key);
                     string randiv = Convert.ToBase64String(objDes.IV);
-
 
                     if (File.Exists(pubkey))
                     {
