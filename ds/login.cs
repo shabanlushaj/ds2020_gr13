@@ -1,0 +1,53 @@
+﻿using System;
+using System.Data;
+using System.Security.Cryptography;
+using System.Text;
+using MySql.Data.MySqlClient;
+
+namespace ds
+{
+    class login
+    {
+        public static void Login(string username, string password)
+        {
+            string connectionstring = @"server=localhost;userid=root;password=7834;database=ds";
+            MySqlConnection con = new MySqlConnection(connectionstring);
+            string mysqlStatement = "select * from users where uname = '" + username + "'";
+            MySqlCommand commands = new MySqlCommand(mysqlStatement, con);
+
+            DataSet ds = new DataSet();
+
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter(commands);
+            try
+            {
+                objAdapter.Fill(ds);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    string DbPassword = ds.Tables[0].Rows[0]["password"].ToString();
+                    string DbSalt = ds.Tables[0].Rows[0]["salt"].ToString();
+
+                    string SaltPassword = password + DbSalt;
+                    byte[] byteSaltPassword = Encoding.UTF8.GetBytes(SaltPassword);
+
+                    SHA256CryptoServiceProvider objHash = new SHA256CryptoServiceProvider();
+                    byte[] byteSaltedHashPassword = objHash.ComputeHash(byteSaltPassword);
+
+                    string saltedHashPassword = Convert.ToBase64String(byteSaltedHashPassword);
+
+                    if (DbPassword.Equals(saltedHashPassword))
+                    {
+                        //TOKENI;
+                    }
+                    else
+                    {
+                        Console.WriteLine("username or password wrong!");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error" + e);
+            }
+        }
+    }
+}

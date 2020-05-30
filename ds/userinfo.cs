@@ -5,15 +5,17 @@ using System.Security.Cryptography;
 
 namespace ds
 {
-    class dbconnection
+    class userinfo
     {
-        public static void Conn()
+        public static void Conn(string uname, string password)
         {
             string connectionstring = @"server=localhost;userid=root;password=7834;database=ds";
-            var con = new MySqlConnection(connectionstring);
-
-            string banti = "Shaban";
-            string mysqlStatement = "insert into users(uname,salt, password) values('" + banti + "' ,  '" + Random() + "','" + Hash(banti) + "');";
+            MySqlConnection con = new MySqlConnection(connectionstring);
+            
+            int Rand = new Random().Next(1000000, 10000000);
+            string randString = Rand.ToString();
+            
+            string mysqlStatement = "insert into users(uname,salt, password) values('" + uname + "' ,  '" + randString + "','" + Hash(password, randString) + "');";
             MySqlCommand commands = new MySqlCommand(mysqlStatement, con);
             try
             {
@@ -21,7 +23,7 @@ namespace ds
                 int fillRows = commands.ExecuteNonQuery();
                 if (fillRows == 1)
                 {
-                   Console.WriteLine("Success!");
+                    Console.WriteLine("Success!");
                 }
                 else
                 {
@@ -30,22 +32,14 @@ namespace ds
             }
             catch (Exception e)
             {
-                Console.WriteLine("Ka ndodhur nje gabim" + e);
+
+                Console.WriteLine("Error: " + e);
             }
         }
 
-        static string Random()
-        {
-            int Rand = new Random().Next(1000000, 10000000);
-            string randString = Rand.ToString();
-            return randString;
-        }
-
-        static string Hash(string plain)
+        static string Hash(string plain, string randString)
         {
             SHA256CryptoServiceProvider objHash = new SHA256CryptoServiceProvider();
-
-            string randString = Random();
 
             string salt_password = plain + randString;
             byte[] hashGet = Encoding.UTF8.GetBytes(salt_password);
