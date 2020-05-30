@@ -4,8 +4,8 @@ using System.Text;
 //foursquare
 namespace ds
 {
-    class FS
-    {
+	class FS
+	{
 		static string C_check(string s)
 		{
 			string cleanTxt = "";
@@ -26,7 +26,7 @@ namespace ds
 
 			for (int i = key.Length - 1; i >= 0; i--)
 			{
-				if (key[i] != 'j'||char.IsDigit(key[i])||char.IsWhiteSpace(key[i]))
+				if (key[i] != 'j' || char.IsDigit(key[i]) || char.IsWhiteSpace(key[i]))
 				{
 					var index = keyword_encoding.IndexOf(key[i]);
 					keyword_encoding = keyword_encoding.Remove(index, 1);

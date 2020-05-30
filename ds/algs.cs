@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,12 +11,13 @@ namespace ds
         public static string des_Encrypt(string plaintext, string key, string iv)
         {
             byte[] bptext = Encoding.UTF8.GetBytes(plaintext);
-            DESCryptoServiceProvider objDES = new DESCryptoServiceProvider();
-
-            objDES.Key = Convert.FromBase64String(key);
-            objDES.IV = Convert.FromBase64String(iv);
-            objDES.Padding = PaddingMode.PKCS7;
-            objDES.Mode = CipherMode.CBC;
+            DESCryptoServiceProvider objDES = new DESCryptoServiceProvider
+            {
+                Key = Convert.FromBase64String(key),
+                IV = Convert.FromBase64String(iv),
+                Padding = PaddingMode.PKCS7,
+                Mode = CipherMode.CBC
+            };
 
 
             MemoryStream ms = new MemoryStream();
@@ -31,12 +32,14 @@ namespace ds
         public static string des_Decrypt(string ciphertext, string key, string iv)
         {
             byte[] bcptext = Convert.FromBase64String(ciphertext);
-            
-            DESCryptoServiceProvider objDES = new DESCryptoServiceProvider();
-            objDES.Key = Convert.FromBase64String(key);
-            objDES.IV = Convert.FromBase64String(iv);
-            objDES.Padding = PaddingMode.PKCS7;
-            objDES.Mode = CipherMode.CBC;
+
+            DESCryptoServiceProvider objDES = new DESCryptoServiceProvider
+            {
+                Key = Convert.FromBase64String(key),
+                IV = Convert.FromBase64String(iv),
+                Padding = PaddingMode.PKCS7,
+                Mode = CipherMode.CBC
+            };
 
             MemoryStream ms = new MemoryStream(bcptext);
             byte[] bdecrypted = new byte[ms.Length];
@@ -53,7 +56,7 @@ namespace ds
         {
             byte[] bytesToEncrypt = Encoding.UTF8.GetBytes(textToEncrypt);
             var rsa = new RSACryptoServiceProvider();
-         
+
             rsa.FromXmlString(publicKeyString.ToString());
             byte[] encryptedData = rsa.Encrypt(bytesToEncrypt, true);
             string base64Encrypted = Convert.ToBase64String(encryptedData);
@@ -62,7 +65,6 @@ namespace ds
 
         public static string rsa_Decrypt(string textToDecrypt, string privateKeyString)
         {
-            byte[] bytesToDecrypt = Encoding.UTF8.GetBytes(textToDecrypt);
             var rsa = new RSACryptoServiceProvider();
 
             rsa.FromXmlString(privateKeyString);
@@ -88,6 +90,45 @@ namespace ds
         {
             check = check.Trim();
             return (check.Length % 4 == 0) && Regex.IsMatch(check, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+        }
+
+        public static bool CheckPassword(string password)
+        {
+          
+            string MatchEmailPattern = "(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9]{6,15})$";//also avoiding spaces
+
+            if (password != null) 
+                return Regex.IsMatch(password, MatchEmailPattern);
+            else
+                return false;
+
+
+        }
+    }
+    class RsaEncryptor
+    {
+        private readonly RSACryptoServiceProvider rsacsp;
+
+        public RsaEncryptor()
+        {
+            rsacsp = new RSACryptoServiceProvider();
+        }
+
+        public RsaEncryptor(string privateKey)
+        {
+            rsacsp = new RSACryptoServiceProvider();
+            rsacsp.FromXmlString(privateKey);
+        }
+        //public key
+        public string GetPublicKey()
+        {
+            return rsacsp.ToXmlString(false);
+        }
+
+        //private key
+        public string GetPrivateKey()
+        {
+            return rsacsp.ToXmlString(true);
         }
     }
 }

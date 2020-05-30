@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -6,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace ds
 {
-    class login
+    class Login_user
     {
         public static void Login(string username, string password)
         {
@@ -21,7 +22,7 @@ namespace ds
             try
             {
                 objAdapter.Fill(ds);
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (ds.Tables.Count>0&&ds.Tables[0].Rows.Count>0)
                 {
                     string DbPassword = ds.Tables[0].Rows[0]["password"].ToString();
                     string DbSalt = ds.Tables[0].Rows[0]["salt"].ToString();
@@ -36,11 +37,11 @@ namespace ds
 
                     if (DbPassword.Equals(saltedHashPassword))
                     {
-                        //TOKENI;
+                        Console.WriteLine("Login SUCCESS!");
                     }
                     else
                     {
-                        Console.WriteLine("username or password wrong!");
+                        Console.WriteLine("Username or password is error!");
                     }
                 }
             }

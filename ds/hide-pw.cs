@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ds
 {
-    class secretpw
+    class Hide_pw
     {
-        public static void secret_password()
+        public static string Hide()
         {
-            Console.Write("You password please: ");
             StringBuilder passwordBuilder = new StringBuilder();
             bool continueReading = true;
             char newLineChar = '\r';
@@ -15,7 +15,6 @@ namespace ds
             {
                 ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(true);
                 char passwordChar = consoleKeyInfo.KeyChar;
-
                 if (passwordChar == newLineChar)
                 {
                     continueReading = false;
@@ -25,8 +24,21 @@ namespace ds
                     passwordBuilder.Append(passwordChar.ToString());
                 }
             }
-            Console.WriteLine();
-            Console.Write("Your password in plain text is {0}", passwordBuilder.ToString());
+            Console.WriteLine("");
+            
+            string pw = passwordBuilder.ToString();
+            if (WR.CheckPassword(pw))
+            {
+                return pw;
+
+            }
+            else
+            {
+                Console.WriteLine("Passwordi nuk eshte valid");
+                return null;
+            }
+            
         }
     }
 }
+
