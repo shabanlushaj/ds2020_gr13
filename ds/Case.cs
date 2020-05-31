@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-//CASE
+//Case
 namespace ds
 {
     class CASE
