@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ds
 {
     class Hide_pw
     {
-        public static string Hide()
+        public static void Hide()
         {
             StringBuilder passwordBuilder = new StringBuilder();
             bool continueReading = true;
             char newLineChar = '\r';
             while (continueReading)
             {
-                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(true);
+                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(false);
                 char passwordChar = consoleKeyInfo.KeyChar;
                 if (passwordChar == newLineChar)
                 {
@@ -27,17 +27,22 @@ namespace ds
             Console.WriteLine("");
             
             string pw = passwordBuilder.ToString();
-            if (WR.CheckPassword(pw))
+            Check(pw);
+        }
+        public static bool Check(string password)
+        {
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,}$";
+            if (password != null)
             {
-                return pw;
-
+                if (Regex.IsMatch(password, pattern))
+                {
+                    return true;
+                }
+                else
+                    return false;
             }
             else
-            {
-                Console.WriteLine("Passwordi nuk eshte valid");
-                return null;
-            }
-            
+                return false;
         }
     }
 }

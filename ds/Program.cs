@@ -19,17 +19,43 @@ namespace ds
                     {
                         string uname = args[1];
                         Console.Write("Jepni fjalekalimin: ");
-                        string pass1 = Hide_pw.Hide();
-                        Console.Write("Perserit fjalekalimin: ");
-                        string pass2 = Hide_pw.Hide();
-                        if (pass1.Equals(pass2))
+                        string pass1 = Console.ReadLine();
+                        if (Hide_pw.Check(pass1))
                         {
-                            User_interact.Userinfo(uname, pass1);
-                            USER.Create_user(uname);
+                            Console.Write("Perserit fjalekalimin: ");
+                            string pass2 = Console.ReadLine();
+                            if (Hide_pw.Check(pass2))
+                            {
+                                if (pass1.Equals(pass2))
+                                {
+                                    User_interact.Userinfo(uname, pass1);
+                                    USER.Create_user(uname);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Fjalekalimet nuk perputhen!");
+
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Passwordi nuk eshte valid!");
+                            }
+                            
                         }
                         else
                         {
-                            Console.WriteLine("Fjalekalimet nuk perputhen!");
+                            Console.WriteLine("Passwordi nuk eshte valid!");
+                        }
+                        
+                        
+                    }
+                    else if (args.Length == 3)
+                    {
+                        string uname = args[1];
+                        if (args[2] == "-s")
+                        {
+                            //HIDE PW method 
 
                         }
                     }

@@ -92,18 +92,6 @@ namespace ds
             return (check.Length % 4 == 0) && Regex.IsMatch(check, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
         }
 
-        public static bool CheckPassword(string password)
-        {
-          
-            string MatchEmailPattern = "(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9]{6,15})$";//also avoiding spaces
-
-            if (password != null) 
-                return Regex.IsMatch(password, MatchEmailPattern);
-            else
-                return false;
-
-
-        }
     }
     class RsaEncryptor
     {
