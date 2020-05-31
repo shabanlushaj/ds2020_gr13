@@ -55,6 +55,10 @@ namespace ds
 
                     }
                 }
+                else if(args[0] == "login")
+                {
+                    Login_user.Login(args[1],args[2]);//should be modified :one argument - others dpndcs;
+                }
                 else if (args[0] == "export-key")
                 {
                     IMPORT.Export_key(args);

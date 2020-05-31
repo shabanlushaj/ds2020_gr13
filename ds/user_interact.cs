@@ -22,8 +22,10 @@ namespace ds
 
             else 
             {
-                int Rand = new Random().Next(1000000, 10000000);
-                string randString = Rand.ToString();
+                byte[] randomBytes = new byte[32];
+                RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
+                rngCsp.GetBytes(randomBytes);
+                string randString = Convert.ToBase64String(randomBytes);
                 string mysqlStatement = "insert into users(uname,salt, password) values('" + uname + "' ,  '" + randString + "','" + Hash(password, randString) + "')";
                 MySqlCommand commands = new MySqlCommand(mysqlStatement, con);
                 try
@@ -45,8 +47,6 @@ namespace ds
                 }
             }
             
-
-           //login.Login("Shaban","Shaban");
         }
         /*
         static string RandomA()
