@@ -58,9 +58,13 @@ namespace ds
 
         static string Hash(string plain, string randString)
         {
-            SHA256CryptoServiceProvider objHash = new SHA256CryptoServiceProvider();
-
-            string salt_password = plain + randString;
+            SHA512CryptoServiceProvider objHash = new SHA512CryptoServiceProvider();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < plain.Length; i++)
+            {
+                sb.Append(string.Concat(plain[i], randString[i]));
+            }
+            string salt_password = sb.ToString();
             byte[] hashGet = Encoding.UTF8.GetBytes(salt_password);
 
             byte[] computeHash = objHash.ComputeHash(hashGet);

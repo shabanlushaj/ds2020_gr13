@@ -27,10 +27,15 @@ namespace ds
                     string DbPassword = ds.Tables[0].Rows[0]["password"].ToString();
                     string DbSalt = ds.Tables[0].Rows[0]["salt"].ToString();
 
-                    string SaltPassword = password + DbSalt;
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < password.Length; i++)
+                    {
+                        sb.Append(string.Concat(password[i], DbSalt[i]));
+                    }
+                    string SaltPassword = sb.ToString();
                     byte[] byteSaltPassword = Encoding.UTF8.GetBytes(SaltPassword);
 
-                    SHA256CryptoServiceProvider objHash = new SHA256CryptoServiceProvider();
+                    SHA512CryptoServiceProvider objHash = new SHA512CryptoServiceProvider();
                     byte[] byteSaltedHashPassword = objHash.ComputeHash(byteSaltPassword);
 
                     string saltedHashPassword = Convert.ToBase64String(byteSaltedHashPassword);
