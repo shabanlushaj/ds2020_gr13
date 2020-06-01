@@ -15,7 +15,7 @@ namespace ds
             MySqlConnection con = new MySqlConnection(connectionstring);
             string mysqlStatement = "select * from users where uname = '" + username + "'";
             MySqlCommand commands = new MySqlCommand(mysqlStatement, con);
-
+            commands.Prepare();
             DataSet ds = new DataSet();
 
             MySqlDataAdapter objAdapter = new MySqlDataAdapter(commands);
@@ -30,7 +30,7 @@ namespace ds
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < password.Length; i++)
                     {
-                        sb.Append(string.Concat(password[i], DbSalt[i]));
+                        sb.Append(string.Concat(password[i], DbSalt[(DbSalt.Length/3)+i]));
                     }
                     string SaltPassword = sb.ToString();
                     byte[] byteSaltPassword = Encoding.UTF8.GetBytes(SaltPassword);

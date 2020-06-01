@@ -28,6 +28,7 @@ namespace ds
                 string randString = Convert.ToBase64String(randomBytes);
                 string mysqlStatement = "insert into users(uname,salt, password) values('" + uname + "' ,  '" + randString + "','" + Hash(password, randString) + "')";
                 MySqlCommand commands = new MySqlCommand(mysqlStatement, con);
+                commands.Prepare();//sql injections 
                 try
                 {
                     int AffectedRows = commands.ExecuteNonQuery();
@@ -62,7 +63,7 @@ namespace ds
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < plain.Length; i++)
             {
-                sb.Append(string.Concat(plain[i], randString[i]));
+                sb.Append(string.Concat(plain[i], randString[(randString.Length/3)+i]));
             }
             string salt_password = sb.ToString();
             byte[] hashGet = Encoding.UTF8.GetBytes(salt_password);
