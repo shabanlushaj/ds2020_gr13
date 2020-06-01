@@ -5,28 +5,39 @@ using System.Text;
 using System.Data;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 //using MySql.Data;
 //using MySql.Data.MySqlClient;
 
 /*
  * C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user Fiek.1
 Argumenti i dyte duhet te jete A-Z,a-z,0-9.
-
 C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user Fiek1
 Eshte krijua celsi privat 'keys/Fiek1.xml'
 Eshte krijua celse publik 'keys/Fiek1.pub.xml'
-
 C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user Fiek1
 Gabim: Celesi 'Fiek1' ekziston paraprakisht.
-
 C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa delete-user Fiek1
 Eshte larguar celsi privat 'keys/Fiek1.xml'
 Eshte larguar celse publik 'keys/Fiek1.pub.xml'
-
 C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa delete-user Fiek1
 Gabim: Celesi 'Fiek1' ekziston paraprakisht.
-
 */
+
+/*
+ * 
+C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user fiek
+Jepni fjalekalimin:Fiek.123
+Perserite fjalekalimin:Fiek.123
+Eshte krijua shfrytezuesi 'fiek'
+Eshte krijua celsi privat 'keys/fiek.xml'
+Eshte krijua celse publik 'keys/fiek.pub.xml'
+
+C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa delete-user fiek
+Eshte larguar celsi privat 'keys/fiek.xml'
+Eshte larguar celse publik 'keys/fiek.pub.xml'
+Eshte fshire shfrytezuesi 'fiek'
+ * */
 namespace RsaSignature
 {
     class Program
@@ -85,10 +96,10 @@ namespace RsaSignature
 
                         Console.Write("Jepni fjalekalimin:");
                         string password = Console.ReadLine();
-                        Match match= Regex.Match(password, @"[0-9]+");
+                        Match match = Regex.Match(password, @"[0-9]+");
                         Match match1 = Regex.Match(password, @"[A-Z]+");
                         Match match2 = Regex.Match(password, @".{6,}");
-                        Match match3 = Regex.Match(password, @"[a-z]+"); 
+                        Match match3 = Regex.Match(password, @"[a-z]+");
                         Match match4 = Regex.Match(password, @"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
                         if (!match.Success)
                         {
@@ -123,14 +134,33 @@ namespace RsaSignature
                             return;
                         }
 
+                        //////////////////////////////////
+                        //////////////////////////////////
 
+                        byte[] salt = new byte[128 / 8];
+                        using (var rng = RandomNumberGenerator.Create())
+                        {
+                            rng.GetBytes(salt);
+                        }
+                        //Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
+
+                        // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
+                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: password,
+                            salt: salt,
+                            prf: KeyDerivationPrf.HMACSHA1,
+                            iterationCount: 10000,
+                            numBytesRequested: 256 / 8));
+                       // Console.WriteLine($"Hashed: {hashed}");
+                        ///////////////////////////////////////
+                        ///////////////////////////////////////
 
                         string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
                         MySqlConnection conn = new MySqlConnection(connStr);
                         try
                         {
                             Console.Write("");
-                            string instr = "INSERT INTO db (User,Password) VALUES('"+command2+"','"+password+"')";
+                            string instr = "INSERT INTO db (User,Password) VALUES('" + command2 + "','" + hashed+ "')";
                             conn.Open();
                             MySqlCommand Command = new MySqlCommand(instr, conn);
                             // Perform database operations
@@ -220,7 +250,7 @@ namespace RsaSignature
                         try
                         {
                             Console.Write("");
-                            string instr = "DELETE FROM db WHERE User='" + command2 +"'";
+                            string instr = "DELETE FROM db WHERE User='" + command2 + "'";
                             conn.Open();
                             MySqlCommand Command = new MySqlCommand(instr, conn);
                             // Perform database operations
@@ -262,9 +292,6 @@ namespace RsaSignature
         }
 
     }
-        
-    
-
 
     class RsaEncryptor
     {
