@@ -6,8 +6,6 @@ using System.Data;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-//using MySql.Data;
-//using MySql.Data.MySqlClient;
 
 /*
  * C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user Fiek.1
