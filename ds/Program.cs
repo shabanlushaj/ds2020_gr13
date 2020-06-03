@@ -49,9 +49,105 @@ namespace ds
                                 Console.WriteLine("Gabim: Celesi '" + command2 + "' ekziston paraprakisht.");
                                 return;
                             }
+				
+				
+                        Console.Write("Jepni fjalekalimin:");
+                        string password = Console.ReadLine();
+                        Match match = Regex.Match(password, @"[0-9]+");
+                        Match match1 = Regex.Match(password, @"[A-Z]+");
+                        Match match2 = Regex.Match(password, @".{6,}");
+                        Match match3 = Regex.Match(password, @"[a-z]+");
+                        Match match4 = Regex.Match(password, @"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+                        if (!match.Success)
+                        {
+                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje numer.");
+                            return;
+                        }
+                        else if (!match1.Success)
+                        {
+                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje shkronje te madhe.");
+                            return;
+                        }
+                        else if (!match2.Success)
+                        {
+                            Console.WriteLine("Fjalekalimi duhet te kete se paku 6 karaktere.");
+                            return;
+                        }
+                        else if (!match3.Success)
+                        {
+                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje shkronje te vogel.");
+                            return;
+                        }
+                        else if (!match4.Success)
+                        {
+                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje simbol.");
+                            return;
+                        }
+                        Console.Write("Perserite fjalekalimin:");
+                        string cpassword = Console.ReadLine();
+                        if (cpassword != password)
+                        {
+                            Console.WriteLine("Fjalekalimet nuk perputhen.");
+                            return;
+                        }
+
+                        //////////////////////////////////
+                        //////////////////////////////////
+
+                        byte[] salt = new byte[128 / 8];
+                        using (var rng = RandomNumberGenerator.Create())
+                        {
+                            rng.GetBytes(salt);
+                        }
+                        string Salt = Convert.ToBase64String(salt);
+                        //Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
+
+                        // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
+                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: password,
+                            salt: salt,
+                            prf: KeyDerivationPrf.HMACSHA1,
+                            iterationCount: 10000,
+                            numBytesRequested: 256 / 8));
+                       // Console.WriteLine($"Hashed: {hashed}");
+                        ///////////////////////////////////////
+                        ///////////////////////////////////////
+
+                        string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
+                        MySqlConnection conn = new MySqlConnection(connStr);
+                        try
+                        {
+                            Console.Write("");
+                            string instr = "INSERT INTO db (User,Password,Salt) VALUES('" + command2 + "','" + hashed+ "','" + Salt + "')";
+                            conn.Open();
+                            MySqlCommand Command = new MySqlCommand(instr, conn);
+                            // Perform database operations
+                            if (Command.ExecuteNonQuery() == 1)
+                            {
+                                Console.Write("");
+                            }
+                            else
+                            {
+                                Console.Write("Failed");
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                            return;
+                        }
+                        conn.Close();
+                        Console.Write("");
+
+				
+				
+				
+				
                             File.WriteAllText(di + command2 + ".xml", privateKey);
                             File.WriteAllText(di + command2 + ".pub.xml", publicKey);
-
+			    
+		            Console.WriteLine("Eshte krijuar shfrytezuesi '" + command2 + "'");
                             Console.WriteLine("Eshte krijuar celsi privat: 'keys/{0}.xml'", command2);
                             Console.WriteLine("Eshte krijuar celsi publik: 'keys/{0}.pub.xml'", command2);
 
@@ -104,6 +200,39 @@ namespace ds
                         }
 
                     }
+			
+			 string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
+                        MySqlConnection conn = new MySqlConnection(connStr);
+                        try
+                        {
+                            Console.Write("");
+                            string instr = "DELETE FROM db WHERE User='" + command2 + "'";
+                            conn.Open();
+                            MySqlCommand Command = new MySqlCommand(instr, conn);
+                            // Perform database operations
+                            if (Command.ExecuteNonQuery() == 1)
+                            {
+                                Console.Write("");
+                            }
+                            else
+                            {
+                                Console.Write("Failed");
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                            return;
+                        }
+                        conn.Close();
+                        Console.Write("");
+                        Console.WriteLine("Eshte fshire shfrytezuesi '" + command2 + "'");
+                    }
+                }
+			
+			
+			
                     catch
                     {
                         Console.WriteLine("Kerkesa duhet te jete: delete-user <emri>");
