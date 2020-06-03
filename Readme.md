@@ -56,24 +56,6 @@ create an alias to call it simplier:
 
 ```$ alias ds=./ds.exe```
 
-#### Commands 
-
-1.1. Creates a user 
-
-##### ```<create-user> <user-name>```
-
-```
-$ ds create-user edon
-Jepni fjalekalimin: fiek2018.
-Perserit fjalekalimin: fiek2018.
-Eshte krijuar shfrytezuesi: 'edon'
-Eshte krijuar celsi privat: 'keys/edon.xml'
-Eshte krijuar celsi publik: 'keys/edon.pub.xml'
-
-$ ds create-user edon
-Useri ekziston paraprakisht!
-Gabim: Celesi 'edon' ekziston paraprakisht.
-```
 
 1. Generates a pair of private and public keys. XML-format
 
