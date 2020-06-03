@@ -4,6 +4,8 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace ds
 {
