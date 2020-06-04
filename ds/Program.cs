@@ -94,7 +94,6 @@ namespace ds
                             }
 
                             //////////////////////////////////
-                            //////////////////////////////////
 
                             byte[] salt = new byte[128 / 8];
                             using (var rng = RandomNumberGenerator.Create())
