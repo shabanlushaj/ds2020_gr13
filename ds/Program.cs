@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace ds
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			if (args.Length > 0)
-			{
-				string command = args[0];
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            if (args.Length > 0)
+            {
+                string command = args[0];
 
                 RsaEncryptor rsa;
                 DirectoryInfo di = Directory.CreateDirectory(@"../../../keys/");
@@ -51,105 +51,105 @@ namespace ds
                                 Console.WriteLine("Gabim: Celesi '" + command2 + "' ekziston paraprakisht.");
                                 return;
                             }
-				
-				
-                        Console.Write("Jepni fjalekalimin:");
-                        string password = Console.ReadLine();
-                        Match match = Regex.Match(password, @"[0-9]+");
-                        Match match1 = Regex.Match(password, @"[A-Z]+");
-                        Match match2 = Regex.Match(password, @".{6,}");
-                        Match match3 = Regex.Match(password, @"[a-z]+");
-                        Match match4 = Regex.Match(password, @"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
-                        if (!match.Success)
-                        {
-                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje numer.");
-                            return;
-                        }
-                        else if (!match1.Success)
-                        {
-                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje shkronje te madhe.");
-                            return;
-                        }
-                        else if (!match2.Success)
-                        {
-                            Console.WriteLine("Fjalekalimi duhet te kete se paku 6 karaktere.");
-                            return;
-                        }
-                        else if (!match3.Success)
-                        {
-                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje shkronje te vogel.");
-                            return;
-                        }
-                        else if (!match4.Success)
-                        {
-                            Console.WriteLine("Fjalekalimi duhet te kete se paku nje simbol.");
-                            return;
-                        }
-                        Console.Write("Perserite fjalekalimin:");
-                        string cpassword = Console.ReadLine();
-                        if (cpassword != password)
-                        {
-                            Console.WriteLine("Fjalekalimet nuk perputhen.");
-                            return;
-                        }
 
-                        //////////////////////////////////
-                        //////////////////////////////////
 
-                        byte[] salt = new byte[128 / 8];
-                        using (var rng = RandomNumberGenerator.Create())
-                        {
-                            rng.GetBytes(salt);
-                        }
-                        string Salt = Convert.ToBase64String(salt);
-                        //Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
-
-                        // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
-                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                            password: password,
-                            salt: salt,
-                            prf: KeyDerivationPrf.HMACSHA1,
-                            iterationCount: 10000,
-                            numBytesRequested: 256 / 8));
-                       // Console.WriteLine($"Hashed: {hashed}");
-                        ///////////////////////////////////////
-                        ///////////////////////////////////////
-
-                        string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
-                        MySqlConnection conn = new MySqlConnection(connStr);
-                        try
-                        {
-                            Console.Write("");
-                            string instr = "INSERT INTO db (User,Password,Salt) VALUES('" + command2 + "','" + hashed+ "','" + Salt + "')";
-                            conn.Open();
-                            MySqlCommand Command = new MySqlCommand(instr, conn);
-                            // Perform database operations
-                            if (Command.ExecuteNonQuery() == 1)
+                            Console.Write("Jepni fjalekalimin:");
+                            string password = Console.ReadLine();
+                            Match match = Regex.Match(password, @"[0-9]+");
+                            Match match1 = Regex.Match(password, @"[A-Z]+");
+                            Match match2 = Regex.Match(password, @".{6,}");
+                            Match match3 = Regex.Match(password, @"[a-z]+");
+                            Match match4 = Regex.Match(password, @"[!@#$%^&*()_+=\[{\]};:<>|./?,-]");
+                            if (!match.Success)
                             {
-                                Console.Write("");
-                            }
-                            else
-                            {
-                                Console.Write("Failed");
+                                Console.WriteLine("Fjalekalimi duhet te kete se paku nje numer.");
                                 return;
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.ToString());
-                            return;
-                        }
-                        conn.Close();
-                        Console.Write("");
+                            else if (!match1.Success)
+                            {
+                                Console.WriteLine("Fjalekalimi duhet te kete se paku nje shkronje te madhe.");
+                                return;
+                            }
+                            else if (!match2.Success)
+                            {
+                                Console.WriteLine("Fjalekalimi duhet te kete se paku 6 karaktere.");
+                                return;
+                            }
+                            else if (!match3.Success)
+                            {
+                                Console.WriteLine("Fjalekalimi duhet te kete se paku nje shkronje te vogel.");
+                                return;
+                            }
+                            else if (!match4.Success)
+                            {
+                                Console.WriteLine("Fjalekalimi duhet te kete se paku nje simbol.");
+                                return;
+                            }
+                            Console.Write("Perserite fjalekalimin:");
+                            string cpassword = Console.ReadLine();
+                            if (cpassword != password)
+                            {
+                                Console.WriteLine("Fjalekalimet nuk perputhen.");
+                                return;
+                            }
 
-				
-				
-				
-				
+                            //////////////////////////////////
+                            //////////////////////////////////
+
+                            byte[] salt = new byte[128 / 8];
+                            using (var rng = RandomNumberGenerator.Create())
+                            {
+                                rng.GetBytes(salt);
+                            }
+                            string Salt = Convert.ToBase64String(salt);
+                            //Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
+
+                            // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
+                            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                password: password,
+                                salt: salt,
+                                prf: KeyDerivationPrf.HMACSHA1,
+                                iterationCount: 10000,
+                                numBytesRequested: 256 / 8));
+                            // Console.WriteLine($"Hashed: {hashed}");
+                            ///////////////////////////////////////
+                            ///////////////////////////////////////
+
+                            string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
+                            MySqlConnection conn = new MySqlConnection(connStr);
+                            try
+                            {
+                                Console.Write("");
+                                string instr = "INSERT INTO db (User,Password,Salt) VALUES('" + command2 + "','" + hashed + "','" + Salt + "')";
+                                conn.Open();
+                                MySqlCommand Command = new MySqlCommand(instr, conn);
+                                // Perform database operations
+                                if (Command.ExecuteNonQuery() == 1)
+                                {
+                                    Console.Write("");
+                                }
+                                else
+                                {
+                                    Console.Write("Failed");
+                                    return;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.ToString());
+                                return;
+                            }
+                            conn.Close();
+                            Console.Write("");
+
+
+
+
+
                             File.WriteAllText(di + command2 + ".xml", privateKey);
                             File.WriteAllText(di + command2 + ".pub.xml", publicKey);
-			    
-		            Console.WriteLine("Eshte krijuar shfrytezuesi '" + command2 + "'");
+
+                            Console.WriteLine("Eshte krijuar shfrytezuesi '" + command2 + "'");
                             Console.WriteLine("Eshte krijuar celsi privat: 'keys/{0}.xml'", command2);
                             Console.WriteLine("Eshte krijuar celsi publik: 'keys/{0}.pub.xml'", command2);
 
@@ -199,49 +199,51 @@ namespace ds
                             {
                                 Console.WriteLine("Gabim: Celesi '" + command2 + "' nuk ekziston.");
                             }
-                        }
 
-                    }
-			
-			 string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
-                        MySqlConnection conn = new MySqlConnection(connStr);
-                        try
-                        {
-                            Console.Write("");
-                            string instr = "DELETE FROM db WHERE User='" + command2 + "'";
-                            conn.Open();
-                            MySqlCommand Command = new MySqlCommand(instr, conn);
-                            // Perform database operations
-                            if (Command.ExecuteNonQuery() == 1)
+
+
+
+
+                            string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
+                            MySqlConnection conn = new MySqlConnection(connStr);
+                            try
                             {
                                 Console.Write("");
+                                string instr = "DELETE FROM db WHERE User='" + command2 + "'";
+                                conn.Open();
+                                MySqlCommand Command = new MySqlCommand(instr, conn);
+                                // Perform database operations
+                                if (Command.ExecuteNonQuery() == 1)
+                                {
+                                    Console.Write("");
+                                }
+                                else
+                                {
+                                    Console.Write("Failed");
+                                    return;
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                Console.Write("Failed");
+                                Console.WriteLine(ex.ToString());
                                 return;
                             }
+                            conn.Close();
+                            Console.Write("");
+                            Console.WriteLine("Eshte fshire shfrytezuesi '" + command2 + "'");
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.ToString());
-                            return;
-                        }
-                        conn.Close();
-                        Console.Write("");
-                        Console.WriteLine("Eshte fshire shfrytezuesi '" + command2 + "'");
+
+
+
                     }
-                }
-			
-			
-			
+
                     catch
                     {
                         Console.WriteLine("Kerkesa duhet te jete: delete-user <emri>");
                         return;
 
                     }
-                }
+        }
                 else if (command == "export-key")
                 {
                     try
@@ -249,9 +251,9 @@ namespace ds
                         if (args[1].Length != 0 && args[2].Length != 0)
                         {
                             string type = args[1];
-                            string name = args[2];
-                            string privKeysDir = di + name + ".xml";
-                            string pubKeysDir = di + name + ".pub.xml";
+        string name = args[2];
+        string privKeysDir = di + name + ".xml";
+        string pubKeysDir = di + name + ".pub.xml";
                             if (File.Exists(pubKeysDir) && File.Exists(privKeysDir))
                             {
                                 if (args.Length == 3)
@@ -259,23 +261,23 @@ namespace ds
                                     if (type == "public")
                                     {
                                         string publicKey = File.ReadAllText(di + name + ".pub.xml");
-                                        publicKey = publicKey.Replace(">", ">" + System.Environment.NewLine);
+        publicKey = publicKey.Replace(">", ">" + System.Environment.NewLine);
                                         Console.WriteLine("\n" + publicKey + "\n");
 
                                     }
                                     else if (type == "private")
                                     {
                                         string privateKey = File.ReadAllText(di + name + ".xml");
-                                        privateKey = privateKey.Replace(">", ">" + System.Environment.NewLine);
+    privateKey = privateKey.Replace(">", ">" + System.Environment.NewLine);
                                         Console.WriteLine("\n" + privateKey + "\n");
                                     }
                                 }
                                 else if (args.Length == 4)
                                 {
                                     string expFile = args[3];
-                                    DirectoryInfo expDir = Directory.CreateDirectory("exported/");
-                                    string publicKey = File.ReadAllText(di + name + ".pub.xml");
-                                    string privateKey = File.ReadAllText(di + name + ".xml");
+DirectoryInfo expDir = Directory.CreateDirectory("exported/");
+string publicKey = File.ReadAllText(di + name + ".pub.xml");
+string privateKey = File.ReadAllText(di + name + ".xml");
                                     if (type == "private")
                                     {
                                         File.WriteAllText(expDir + expFile + ".xml", privateKey);
@@ -284,7 +286,7 @@ namespace ds
                                     else if (type == "public")
                                     {
                                         string expFilep = expFile + ".pub";
-                                        File.WriteAllText(expDir + expFilep + ".xml", publicKey);
+File.WriteAllText(expDir + expFilep + ".xml", publicKey);
                                         Console.WriteLine("Celesi publik u ruajt ne fajllin " + expFile + ".pub.xml");
                                     }
                                 }
@@ -297,7 +299,7 @@ namespace ds
                                     if (type == "public")
                                     {
                                         string publicKey = File.ReadAllText(di + name + ".pub.xml");
-                                        Console.WriteLine("\n" + publicKey + "\n");
+Console.WriteLine("\n" + publicKey + "\n");
                                     }
                                     else if (type == "private")
                                     {
@@ -307,10 +309,10 @@ namespace ds
                                 else if (args.Length == 4)
                                 {
                                     string expFile = args[3];
-                                    DirectoryInfo expDir = Directory.CreateDirectory("exported/");
+DirectoryInfo expDir = Directory.CreateDirectory("exported/");
                                     using (StreamWriter strw = File.CreateText(expDir + expFile)) ;
                                     string publicKey = File.ReadAllText(di + name + ".pub.xml");
-                                    File.WriteAllText(expDir + expFile, publicKey);
+File.WriteAllText(expDir + expFile, publicKey);
                                     Console.WriteLine("Celesi publik u ruajt ne fajllin " + expFile);
                                 }
                             }
@@ -332,16 +334,16 @@ namespace ds
                         if (args[1].Length != 0 && args[2].Length != 0)
                         {
                             string name = args[1];
-                            string path = args[2];
-                            string distinguishURL = "http";
+string path = args[2];
+string distinguishURL = "http";
                             if (path.Contains(distinguishURL))
                             {
                                 string getContent = Import_key.Get(path);
                                 if (getContent.Contains("<P>"))
                                 {
                                     rsa = new RsaEncryptor();
-                                    string publicKey = rsa.GetPublicKey();
-                                    File.WriteAllText(di + name + ".xml", getContent);
+string publicKey = rsa.GetPublicKey();
+File.WriteAllText(di + name + ".xml", getContent);
                                     File.WriteAllText(di + name + ".pub.xml", publicKey);
                                     Console.WriteLine("Celesi privat u ruajt ne fajllin " + di + name + ".xml");
                                     Console.WriteLine("Celesi publik u ruajt ne fajllin " + di + name + ".pub.xml");
@@ -361,8 +363,8 @@ namespace ds
                                     if (content.Contains("<P>"))
                                     {
                                         rsa = new RsaEncryptor();
-                                        string publicKey = rsa.GetPublicKey();
-                                        File.WriteAllText(di + name + ".xml", content);
+string publicKey = rsa.GetPublicKey();
+File.WriteAllText(di + name + ".xml", content);
                                         File.WriteAllText(di + name + ".pub.xml", publicKey);
                                         Console.WriteLine("Celesi privat u ruajt ne fajllin " + di + name + ".xml");
                                         Console.WriteLine("Celesi publik u ruajt ne fajllin " + di + name + ".pub.xml");
@@ -388,12 +390,12 @@ namespace ds
                 {
 
                     Dictionary<string, string> list_keys = new Dictionary<string, string>();
-                    string[] fCount = Directory.GetFiles(@"../../../keys/", "*.xml");
+string[] fCount = Directory.GetFiles(@"../../../keys/", "*.xml");
 
                     foreach (string k in fCount)
                     {
                         string val = File.ReadAllText(@k, Encoding.UTF8);
-                        list_keys.Add(k, val);
+list_keys.Add(k, val);
 
                     }
                     foreach (KeyValuePair<string, string> item in list_keys)
@@ -406,11 +408,11 @@ namespace ds
                 {
                     string input = args[1];
 
-                    string pubkey = di + input + ".pub.xml";
-                    DESCryptoServiceProvider objDes = new DESCryptoServiceProvider();
+string pubkey = di + input + ".pub.xml";
+DESCryptoServiceProvider objDes = new DESCryptoServiceProvider();
 
-                    string randKey = Convert.ToBase64String(objDes.Key);
-                    string randiv = Convert.ToBase64String(objDes.IV);
+string randKey = Convert.ToBase64String(objDes.Key);
+string randiv = Convert.ToBase64String(objDes.IV);
 
 
                     if (File.Exists(pubkey))
@@ -419,20 +421,20 @@ namespace ds
                         {
 
                             string publicKey = File.ReadAllText(di + input + ".pub.xml");
-                            string tekst = args[2];
+string tekst = args[2];
 
-                            Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
+Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
                         }
                         else if (args.Length == 4)
                         {
                             string publicKey = File.ReadAllText(di + input + ".pub.xml");
-                            string tekst = args[2];
-                            string file = args[3];
-                            DirectoryInfo di2 = Directory.CreateDirectory(@"../../../files/");
+string tekst = args[2];
+string file = args[3];
+DirectoryInfo di2 = Directory.CreateDirectory(@"../../../files/");
                             using (StreamWriter sw = File.CreateText(di2 + file)) ;
 
                             string g = (WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
-                            File.WriteAllText(di2 + file, g);
+File.WriteAllText(di2 + file, g);
 
                             Console.WriteLine("Mesazhi i enkriptuar u ruajt ne fajllin: files/{0}", file);
 
@@ -454,14 +456,14 @@ namespace ds
                     {
                         var array = cipher.Split(new[] { '.' }, 4);
 
-                        string firstElem = array[0];
-                        string second = array[1];
-                        string third = array[2];
-                        string fourth = array[3];
+string firstElem = array[0];
+string second = array[1];
+string third = array[2];
+string fourth = array[3];
                         if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
                         {
                             string input = WR.Base64Decode(firstElem);
-                            string privkey = di + input + ".xml";
+string privkey = di + input + ".xml";
 
                             if (File.Exists(privkey))
                             {
@@ -509,14 +511,14 @@ namespace ds
                         if (Regex.Matches(content, @"\.").Count == 3)
                         {
                             var array = content.Split(new[] { '.' }, 4);
-                            string firstElem = array[0];
-                            string second = array[1];
-                            string third = array[2];
-                            string fourth = array[3];
+string firstElem = array[0];
+string second = array[1];
+string third = array[2];
+string fourth = array[3];
                             if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
                             {
                                 string input = WR.Base64Decode(firstElem);
-                                string privkey = di + input + ".xml";
+string privkey = di + input + ".xml";
 
                                 if (File.Exists(privkey))
                                 {
@@ -572,9 +574,9 @@ namespace ds
                             try
                             {
                                 string plaintext = args[2];
-                                string key1 = args[3];
-                                string key2 = args[4];
-                                Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
+string key1 = args[3];
+string key2 = args[4];
+Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
                             }
 
                             catch (Exception)
@@ -588,9 +590,9 @@ namespace ds
                             try
                             {
                                 string ciphertext = args[2];
-                                string key1 = args[3];
-                                string key2 = args[4];
-                                Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
+string key1 = args[3];
+string key2 = args[4];
+Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
                             }
 
                             catch (Exception)
@@ -616,32 +618,32 @@ namespace ds
                         if (args[1] == "lower")
                         {
                             string word = args[2];
-                            Console.WriteLine(word.ToLower());
+Console.WriteLine(word.ToLower());
                         }
                         else if (args[1] == "upper")
                         {
                             string word = args[2];
-                            Console.WriteLine(word.ToUpper());
+Console.WriteLine(word.ToUpper());
                         }
                         else if (args[1] == "capitalize")
                         {
                             string word = args[2];
-                            Console.WriteLine(CASE.Capitalize(word));
+Console.WriteLine(CASE.Capitalize(word));
                         }
                         else if (args[1] == "inverse")
                         {
                             string word = args[2];
-                            Console.WriteLine(CASE.Inverse(word));
+Console.WriteLine(CASE.Inverse(word));
                         }
                         else if (args[1] == "alternating")
                         {
                             string word = args[2];
-                            Console.WriteLine(CASE.Alternating(word));
+Console.WriteLine(CASE.Alternating(word));
                         }
                         else if (args[1] == "sentence")
                         {
                             string a = args[2];
-                            Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CASE.Str4(a) + ".\n" + CASE.Str5(a) + ", " + a.ToLower() + ". " + CASE.Str7(a) + "! " + CASE.Str8(a) + ".");
+Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CASE.Str4(a) + ".\n" + CASE.Str5(a) + ", " + a.ToLower() + ". " + CASE.Str7(a) + "! " + CASE.Str8(a) + ".");
                         }
                         else
                             Console.WriteLine("Your command was wrong, choice one of the cases: <lower> <upper> <capitalize> <inverse> <alternating> <sentence>");
@@ -658,16 +660,16 @@ namespace ds
                         if (args[1] == "encrypt")
                         {
                             string plaint = args[2];
-                            string rail = args[3];
-                            int railsNr = Int32.Parse(rail);
-                            Console.WriteLine(RF.Rencode(plaint, railsNr));
+string rail = args[3];
+int railsNr = Int32.Parse(rail);
+Console.WriteLine(RF.Rencode(plaint, railsNr));
                         }
                         else if (args[1] == "decrypt")
                         {
                             string ciphert = args[2];
-                            string rail = args[3];
-                            int railsNr = Int32.Parse(rail);
-                            Console.WriteLine(RF.Rdecode(ciphert, railsNr));
+string rail = args[3];
+int railsNr = Int32.Parse(rail);
+Console.WriteLine(RF.Rdecode(ciphert, railsNr));
                         }
                         else
                         {
