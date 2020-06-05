@@ -113,7 +113,7 @@ namespace ds
                             // Console.WriteLine($"Hashed: {hashed}");
                             ///////////////////////////////////////
                             ///////////////////////////////////////
-
+				//DataBase
                             string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
                             MySqlConnection conn = new MySqlConnection(connStr);
                             try
