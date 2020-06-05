@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 //using MySql.Data.MySqlClient;
 
 /*
+Nga shembulli i ekzekutuar
  * C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user Fiek.1
 Argumenti i dyte duhet te jete A-Z,a-z,0-9.
 C:\Users\HP\source\repos\rsaa\rsaa\bin\Debug\netcoreapp3.1>rsaa create-user Fiek1
