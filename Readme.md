@@ -73,7 +73,6 @@ Gabim: Celesi 'edon' ekziston paraprakisht.
 1.1 Password,DataBase & Hash-Salt
 ##### ```<create-user> <user-name>```
 ```Start Amache & MySQL
-```
 ds create-user Fiek
 Jepni fjalekalimin:Fiek.11
 Perserite fjalekalimin:Fiek.11
@@ -98,7 +97,6 @@ Gabim: Celesi 'edon' nuk ekziston.
 2.2 Delete keys and data from DataBase
 ##### ```<delete-user> <user-name>```
 ```Start Amache & MySQL
-```
 ds delete-user Fiek
 Eshte larguar celsi privat: 'keys/Fiek.xml'
 Eshte larguar celsi publik: 'keys/Fiek.pub.xml'
