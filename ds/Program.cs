@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Renci.SshNet.Security.Cryptography;
 
 namespace ds
 {
@@ -113,7 +114,7 @@ namespace ds
                             // Console.WriteLine($"Hashed: {hashed}");
                             ///////////////////////////////////////
                             ///////////////////////////////////////
-				//DataBase
+                            //DataBase
                             string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
                             MySqlConnection conn = new MySqlConnection(connStr);
                             try
@@ -140,10 +141,6 @@ namespace ds
                             }
                             conn.Close();
                             Console.Write("");
-
-
-
-
 
                             File.WriteAllText(di + command2 + ".xml", privateKey);
                             File.WriteAllText(di + command2 + ".pub.xml", publicKey);
@@ -198,7 +195,7 @@ namespace ds
                             {
                                 Console.WriteLine("Gabim: Celesi '" + command2 + "' nuk ekziston.");
                             }
-				
+
                             string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
                             MySqlConnection conn = new MySqlConnection(connStr);
                             try
@@ -235,10 +232,10 @@ namespace ds
                         return;
 
                     }
-        }
-		    
-		    ///
-	else if (command == "login")
+                }
+
+                ///
+                else if (command == "login")
                 {
                     try
                     {
@@ -251,7 +248,7 @@ namespace ds
                             Login_user.Login(args[1], password);
                         }
                     }
-                    catch 
+                    catch
                     {
                         Console.WriteLine("Kerkesa duhet te jete: login <username>");
                         return;
@@ -272,8 +269,182 @@ namespace ds
                         return;
                     }
                 }
-		    ///
-		    
+                ///
+
+
+
+                else if (command == "write-message")
+                {
+                    string input = args[1];
+
+                    string pubkey = di + input + ".pub.xml";
+                    DESCryptoServiceProvider objDes = new DESCryptoServiceProvider();
+
+                    string randKey = Convert.ToBase64String(objDes.Key);
+                    string randiv = Convert.ToBase64String(objDes.IV);
+
+
+                    if (File.Exists(pubkey))
+                    {
+                        if (args.Length == 3)
+                        {
+
+                            string publicKey = File.ReadAllText(di + input + ".pub.xml");
+                            string tekst = args[2];
+
+                            Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
+                        }
+                        else if (args.Length == 4)
+                        {
+                            string publicKey = File.ReadAllText(di + input + ".pub.xml");
+                            string tekst = args[2];
+                            string file = args[3];
+                            DirectoryInfo di2 = Directory.CreateDirectory(@"../../../files/");
+                           // using (StreamWriter sw = File.CreateText(di2 + file));
+
+                            string g = (WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
+                            File.WriteAllText(di2 + file, g);
+
+                            Console.WriteLine("Mesazhi i enkriptuar u ruajt ne fajllin: files/{0}", file);
+
+                        }
+                        else if(args.Length==5)
+                        {
+                            string publicKey = File.ReadAllText(di + input + ".pub.xml");
+                            string tekst = args[2];
+                            string sender = args[3];
+                            string token = args[4];
+                            string message = "get from token";
+                            Signature  sign = new Signature();
+                            Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv)+"."+sign.Sender(message,randKey,randiv));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Numri i argumenteve nuk eshte valid!");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Celesi publik: {0} nuk ekziston ", input);
+                    }
+                }
+                else if (command == "read-message")
+                {
+                    string cipher = args[1];
+                    if (Regex.Matches(cipher, @"\.").Count == 3)
+                    {
+                        var array = cipher.Split(new[] { '.' }, 4);
+
+                        string firstElem = array[0];
+                        string second = array[1];
+                        string third = array[2];
+                        string fourth = array[3];
+                        if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
+                        {
+                            string input = WR.Base64Decode(firstElem);
+                            string privkey = di + input + ".xml";
+
+                            if (File.Exists(privkey))
+                            {
+                                Console.WriteLine("Marresi: " + input);
+                                string privateKey = File.ReadAllText(di + input + ".xml");
+                                try
+                                {
+                                    string iv_get = WR.Base64Decode(second);
+                                    try
+                                    {
+                                        string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
+                                        try
+                                        {
+                                            Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
+                                        }
+                                        catch (Exception)
+                                        {
+                                            Console.WriteLine("Error: {0}");
+
+                                        }
+                                    }
+                                    catch (CryptographicException)
+                                    {
+                                        Console.WriteLine("Dekriptimi nuk mund te behet me celesin e dhene");
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    Console.WriteLine("IV nuk eshte e njejte me ate te enkriptimit!");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nuk eshte Base64!");
+                        }
+                    }
+                    else if (File.Exists(cipher))
+                    {
+                        string content = File.ReadAllText(cipher);
+                        if (Regex.Matches(content, @"\.").Count == 3)
+                        {
+                            var array = content.Split(new[] { '.' }, 4);
+                            string firstElem = array[0];
+                            string second = array[1];
+                            string third = array[2];
+                            string fourth = array[3];
+                            if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
+                            {
+                                string input = WR.Base64Decode(firstElem);
+                                string privkey = di + input + ".xml";
+
+                                if (File.Exists(privkey))
+                                {
+                                    Console.WriteLine("Marresi: " + input);
+                                    string privateKey = File.ReadAllText(di + input + ".xml");
+                                    try
+                                    {
+                                        string iv_get = WR.Base64Decode(second);
+                                        try
+                                        {
+                                            string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
+                                            try
+                                            {
+                                                Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
+                                            }
+                                            catch (Exception)
+                                            {
+                                                Console.WriteLine("Error: {0}");
+                                            }
+                                        }
+                                        catch (CryptographicException)
+                                        {
+                                            Console.WriteLine("Dekriptimi nuk mund te behet me celesin e dhene");
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+                                        Console.WriteLine("IV nuk eshte e njejte me ate te enkriptimit!");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Nuk eshte Base64!");
+                            }
+                        }
+                    }
+
+                    else
+                        Console.WriteLine("Provide valid args!");
+                }
+
+                //faza2
                 else if (command == "export-key")
                 {
                     try
@@ -281,9 +452,9 @@ namespace ds
                         if (args[1].Length != 0 && args[2].Length != 0)
                         {
                             string type = args[1];
-        string name = args[2];
-        string privKeysDir = di + name + ".xml";
-        string pubKeysDir = di + name + ".pub.xml";
+                            string name = args[2];
+                            string privKeysDir = di + name + ".xml";
+                            string pubKeysDir = di + name + ".pub.xml";
                             if (File.Exists(pubKeysDir) && File.Exists(privKeysDir))
                             {
                                 if (args.Length == 3)
@@ -291,23 +462,23 @@ namespace ds
                                     if (type == "public")
                                     {
                                         string publicKey = File.ReadAllText(di + name + ".pub.xml");
-        publicKey = publicKey.Replace(">", ">" + System.Environment.NewLine);
+                                        publicKey = publicKey.Replace(">", ">" + System.Environment.NewLine);
                                         Console.WriteLine("\n" + publicKey + "\n");
 
                                     }
                                     else if (type == "private")
                                     {
                                         string privateKey = File.ReadAllText(di + name + ".xml");
-    privateKey = privateKey.Replace(">", ">" + System.Environment.NewLine);
+                                        privateKey = privateKey.Replace(">", ">" + System.Environment.NewLine);
                                         Console.WriteLine("\n" + privateKey + "\n");
                                     }
                                 }
                                 else if (args.Length == 4)
                                 {
                                     string expFile = args[3];
-DirectoryInfo expDir = Directory.CreateDirectory("exported/");
-string publicKey = File.ReadAllText(di + name + ".pub.xml");
-string privateKey = File.ReadAllText(di + name + ".xml");
+                                    DirectoryInfo expDir = Directory.CreateDirectory("exported/");
+                                    string publicKey = File.ReadAllText(di + name + ".pub.xml");
+                                    string privateKey = File.ReadAllText(di + name + ".xml");
                                     if (type == "private")
                                     {
                                         File.WriteAllText(expDir + expFile + ".xml", privateKey);
@@ -316,7 +487,7 @@ string privateKey = File.ReadAllText(di + name + ".xml");
                                     else if (type == "public")
                                     {
                                         string expFilep = expFile + ".pub";
-File.WriteAllText(expDir + expFilep + ".xml", publicKey);
+                                        File.WriteAllText(expDir + expFilep + ".xml", publicKey);
                                         Console.WriteLine("Celesi publik u ruajt ne fajllin " + expFile + ".pub.xml");
                                     }
                                 }
@@ -329,7 +500,7 @@ File.WriteAllText(expDir + expFilep + ".xml", publicKey);
                                     if (type == "public")
                                     {
                                         string publicKey = File.ReadAllText(di + name + ".pub.xml");
-Console.WriteLine("\n" + publicKey + "\n");
+                                        Console.WriteLine("\n" + publicKey + "\n");
                                     }
                                     else if (type == "private")
                                     {
@@ -339,10 +510,10 @@ Console.WriteLine("\n" + publicKey + "\n");
                                 else if (args.Length == 4)
                                 {
                                     string expFile = args[3];
-DirectoryInfo expDir = Directory.CreateDirectory("exported/");
-                                    using (StreamWriter strw = File.CreateText(expDir + expFile)) ;
+                                    DirectoryInfo expDir = Directory.CreateDirectory("exported/");
+                                 //   using (StreamWriter strw = File.CreateText(expDir + expFile)) ;
                                     string publicKey = File.ReadAllText(di + name + ".pub.xml");
-File.WriteAllText(expDir + expFile, publicKey);
+                                    File.WriteAllText(expDir + expFile, publicKey);
                                     Console.WriteLine("Celesi publik u ruajt ne fajllin " + expFile);
                                 }
                             }
@@ -364,16 +535,16 @@ File.WriteAllText(expDir + expFile, publicKey);
                         if (args[1].Length != 0 && args[2].Length != 0)
                         {
                             string name = args[1];
-string path = args[2];
-string distinguishURL = "http";
+                            string path = args[2];
+                            string distinguishURL = "http";
                             if (path.Contains(distinguishURL))
                             {
                                 string getContent = Import_key.Get(path);
                                 if (getContent.Contains("<P>"))
                                 {
                                     rsa = new RsaEncryptor();
-string publicKey = rsa.GetPublicKey();
-File.WriteAllText(di + name + ".xml", getContent);
+                                    string publicKey = rsa.GetPublicKey();
+                                    File.WriteAllText(di + name + ".xml", getContent);
                                     File.WriteAllText(di + name + ".pub.xml", publicKey);
                                     Console.WriteLine("Celesi privat u ruajt ne fajllin " + di + name + ".xml");
                                     Console.WriteLine("Celesi publik u ruajt ne fajllin " + di + name + ".pub.xml");
@@ -393,8 +564,8 @@ File.WriteAllText(di + name + ".xml", getContent);
                                     if (content.Contains("<P>"))
                                     {
                                         rsa = new RsaEncryptor();
-string publicKey = rsa.GetPublicKey();
-File.WriteAllText(di + name + ".xml", content);
+                                        string publicKey = rsa.GetPublicKey();
+                                        File.WriteAllText(di + name + ".xml", content);
                                         File.WriteAllText(di + name + ".pub.xml", publicKey);
                                         Console.WriteLine("Celesi privat u ruajt ne fajllin " + di + name + ".xml");
                                         Console.WriteLine("Celesi publik u ruajt ne fajllin " + di + name + ".pub.xml");
@@ -420,12 +591,12 @@ File.WriteAllText(di + name + ".xml", content);
                 {
 
                     Dictionary<string, string> list_keys = new Dictionary<string, string>();
-string[] fCount = Directory.GetFiles(@"../../../keys/", "*.xml");
+                    string[] fCount = Directory.GetFiles(@"../../../keys/", "*.xml");
 
                     foreach (string k in fCount)
                     {
                         string val = File.ReadAllText(@k, Encoding.UTF8);
-list_keys.Add(k, val);
+                        list_keys.Add(k, val);
 
                     }
                     foreach (KeyValuePair<string, string> item in list_keys)
@@ -434,166 +605,6 @@ list_keys.Add(k, val);
                     }
                 }
 
-                else if (command == "write-message")
-                {
-                    string input = args[1];
-
-string pubkey = di + input + ".pub.xml";
-DESCryptoServiceProvider objDes = new DESCryptoServiceProvider();
-
-string randKey = Convert.ToBase64String(objDes.Key);
-string randiv = Convert.ToBase64String(objDes.IV);
-
-
-                    if (File.Exists(pubkey))
-                    {
-                        if (args.Length == 3)
-                        {
-
-                            string publicKey = File.ReadAllText(di + input + ".pub.xml");
-string tekst = args[2];
-
-Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
-                        }
-                        else if (args.Length == 4)
-                        {
-                            string publicKey = File.ReadAllText(di + input + ".pub.xml");
-string tekst = args[2];
-string file = args[3];
-DirectoryInfo di2 = Directory.CreateDirectory(@"../../../files/");
-                            using (StreamWriter sw = File.CreateText(di2 + file)) ;
-
-                            string g = (WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv));
-File.WriteAllText(di2 + file, g);
-
-                            Console.WriteLine("Mesazhi i enkriptuar u ruajt ne fajllin: files/{0}", file);
-
-                        }
-                        else
-                        {
-                            Console.WriteLine("Numri i argumenteve nuk eshte valid!");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Celesi publik: {0} nuk ekziston ", input);
-                    }
-                }
-                else if (command == "read-message")
-                {
-                    string cipher = args[1];
-                    if (Regex.Matches(cipher, @"\.").Count == 3)
-                    {
-                        var array = cipher.Split(new[] { '.' }, 4);
-
-string firstElem = array[0];
-string second = array[1];
-string third = array[2];
-string fourth = array[3];
-                        if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
-                        {
-                            string input = WR.Base64Decode(firstElem);
-string privkey = di + input + ".xml";
-
-                            if (File.Exists(privkey))
-                            {
-                                Console.WriteLine("Marresi: " + input);
-                                string privateKey = File.ReadAllText(di + input + ".xml");
-                                try
-                                {
-                                    string iv_get = WR.Base64Decode(second);
-                                    try
-                                    {
-                                        string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
-                                        try
-                                        {
-                                            Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
-                                        }
-                                        catch (Exception)
-                                        {
-                                            Console.WriteLine("Error: {0}");
-
-                                        }
-                                    }
-                                    catch (CryptographicException e)
-                                    {
-                                        Console.WriteLine("Dekriptimi nuk mund te behet me celesin e dhene");
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine("IV nuk eshte e njejte me ate te enkriptimit!");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Nuk eshte Base64!");
-                        }
-                    }
-                    else if (File.Exists(cipher))
-                    {
-                        string content = File.ReadAllText(cipher);
-                        if (Regex.Matches(content, @"\.").Count == 3)
-                        {
-                            var array = content.Split(new[] { '.' }, 4);
-string firstElem = array[0];
-string second = array[1];
-string third = array[2];
-string fourth = array[3];
-                            if (WR.Check_Base64(firstElem) && WR.Check_Base64(second) && WR.Check_Base64(third) && WR.Check_Base64(fourth))
-                            {
-                                string input = WR.Base64Decode(firstElem);
-string privkey = di + input + ".xml";
-
-                                if (File.Exists(privkey))
-                                {
-                                    Console.WriteLine("Marresi: " + input);
-                                    string privateKey = File.ReadAllText(di + input + ".xml");
-                                    try
-                                    {
-                                        string iv_get = WR.Base64Decode(second);
-                                        try
-                                        {
-                                            string rsaKey_get = WR.rsa_Decrypt(third, privateKey);
-                                            try
-                                            {
-                                                Console.WriteLine("Dekriptimi: " + WR.des_Decrypt(fourth, rsaKey_get, iv_get));
-                                            }
-                                            catch (Exception)
-                                            {
-                                                Console.WriteLine("Error: {0}");
-                                            }
-                                        }
-                                        catch (CryptographicException e)
-                                        {
-                                            Console.WriteLine("Dekriptimi nuk mund te behet me celesin e dhene");
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Console.WriteLine("IV nuk eshte e njejte me ate te enkriptimit!");
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Celesi privat " + input + " nuk ekziston.");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Nuk eshte Base64!");
-                            }
-
-                        }
-                    }
-                    else
-                        Console.WriteLine("Provide valid args!");
-                }
                 //FAZA 1
                 else if (command == "four-square")
                 {
@@ -604,9 +615,9 @@ string privkey = di + input + ".xml";
                             try
                             {
                                 string plaintext = args[2];
-string key1 = args[3];
-string key2 = args[4];
-Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
+                                string key1 = args[3];
+                                string key2 = args[4];
+                                Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
                             }
 
                             catch (Exception)
@@ -620,9 +631,9 @@ Console.WriteLine("Encryption: " + FS.Encrypt(plaintext, key1, key2));
                             try
                             {
                                 string ciphertext = args[2];
-string key1 = args[3];
-string key2 = args[4];
-Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
+                                string key1 = args[3];
+                                string key2 = args[4];
+                                Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
                             }
 
                             catch (Exception)
@@ -648,32 +659,32 @@ Console.WriteLine("Decryption: " + FS.Decrypt(ciphertext, key1, key2));
                         if (args[1] == "lower")
                         {
                             string word = args[2];
-Console.WriteLine(word.ToLower());
+                            Console.WriteLine(word.ToLower());
                         }
                         else if (args[1] == "upper")
                         {
                             string word = args[2];
-Console.WriteLine(word.ToUpper());
+                            Console.WriteLine(word.ToUpper());
                         }
                         else if (args[1] == "capitalize")
                         {
                             string word = args[2];
-Console.WriteLine(CASE.Capitalize(word));
+                            Console.WriteLine(CASE.Capitalize(word));
                         }
                         else if (args[1] == "inverse")
                         {
                             string word = args[2];
-Console.WriteLine(CASE.Inverse(word));
+                            Console.WriteLine(CASE.Inverse(word));
                         }
                         else if (args[1] == "alternating")
                         {
                             string word = args[2];
-Console.WriteLine(CASE.Alternating(word));
+                            Console.WriteLine(CASE.Alternating(word));
                         }
                         else if (args[1] == "sentence")
                         {
                             string a = args[2];
-Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CASE.Str4(a) + ".\n" + CASE.Str5(a) + ", " + a.ToLower() + ". " + CASE.Str7(a) + "! " + CASE.Str8(a) + ".");
+                            Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CASE.Str4(a) + ".\n" + CASE.Str5(a) + ", " + a.ToLower() + ". " + CASE.Str7(a) + "! " + CASE.Str8(a) + ".");
                         }
                         else
                             Console.WriteLine("Your command was wrong, choice one of the cases: <lower> <upper> <capitalize> <inverse> <alternating> <sentence>");
@@ -690,16 +701,16 @@ Console.Write(a.ToLower() + ", " + CASE.Str2(a) + ". " + a.ToUpper() + "! " + CA
                         if (args[1] == "encrypt")
                         {
                             string plaint = args[2];
-string rail = args[3];
-int railsNr = Int32.Parse(rail);
-Console.WriteLine(RF.Rencode(plaint, railsNr));
+                            string rail = args[3];
+                            int railsNr = Int32.Parse(rail);
+                            Console.WriteLine(RF.Rencode(plaint, railsNr));
                         }
                         else if (args[1] == "decrypt")
                         {
                             string ciphert = args[2];
-string rail = args[3];
-int railsNr = Int32.Parse(rail);
-Console.WriteLine(RF.Rdecode(ciphert, railsNr));
+                            string rail = args[3];
+                            int railsNr = Int32.Parse(rail);
+                            Console.WriteLine(RF.Rdecode(ciphert, railsNr));
                         }
                         else
                         {

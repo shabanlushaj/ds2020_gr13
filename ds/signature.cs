@@ -1,3 +1,5 @@
+using Org.BouncyCastle.Bcpg.Sig;
+using Renci.SshNet.Security;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -5,7 +7,7 @@ using System.Text;
 
 namespace ds
 {
-    class Signature
+    public sealed class Signature
     {
         public string Compute_hash(string plaintext)
         {
@@ -44,6 +46,13 @@ namespace ds
 
                 return rsaDeformatter.VerifySignature(hashOfDataToSign, signature);
             }
+        }
+        public string Sender(string message,string key, string iv)
+        {
+            string msg_des = WR.des_Encrypt(message, key, iv);
+            string msg_sign = Sign_data(msg_des);
+            string msg_b64 = WR.Base64Encode(msg_sign);
+            return msg_b64;
         }
         
     }
