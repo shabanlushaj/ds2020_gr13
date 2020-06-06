@@ -70,6 +70,18 @@ $ ds create-user edon
 Gabim: Celesi 'edon' ekziston paraprakisht.
 ```
 
+1.1 Password,DataBase & Hash-Salt
+##### ```<create-user> <user-name>```
+```Start Amache & MySQL
+```
+ds create-user Fiek
+Jepni fjalekalimin:Fiek.11
+Perserite fjalekalimin:Fiek.11
+Eshte krijuar shfrytezuesi 'Fiek'
+Eshte krijuar celsi privat: 'keys/Fiek.xml'
+Eshte krijuar celsi publik: 'keys/Fiek.pub.xml'
+
+```
 
 2. Deletes a pair of private and public keys.
 
@@ -83,7 +95,15 @@ Eshte larguar celsi publik: 'keys/edon.pub.xml'
 $ ds delete-user edon
 Gabim: Celesi 'edon' nuk ekziston.
 ```
-
+2.2 Delete keys and data from DataBase
+##### ```<delete-user> <user-name>```
+```Start Amache & MySQL
+```
+ds delete-user Fiek
+Eshte larguar celsi privat: 'keys/Fiek.xml'
+Eshte larguar celsi publik: 'keys/Fiek.pub.xml'
+Eshte fshire shfrytezuesi 'Fiek'
+```
 
 3. Encrypts a message with users public key.
 
