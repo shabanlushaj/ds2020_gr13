@@ -198,11 +198,7 @@ namespace ds
                             {
                                 Console.WriteLine("Gabim: Celesi '" + command2 + "' nuk ekziston.");
                             }
-
-
-
-
-
+				
                             string connStr = "server=localhost;user=root;database=csharp;port=3306;password=";
                             MySqlConnection conn = new MySqlConnection(connStr);
                             try
@@ -231,9 +227,6 @@ namespace ds
                             Console.Write("");
                             Console.WriteLine("Eshte fshire shfrytezuesi '" + command2 + "'");
                         }
-
-
-
                     }
 
                     catch
@@ -243,6 +236,44 @@ namespace ds
 
                     }
         }
+		    
+		    ///
+	else if (command == "login")
+                {
+                    try
+                    {
+                        if (args[1].Length != 0)
+                        {
+                            string privKD = di + args[1] + ".xml";
+                            string pubKD = di + args[1] + ".pub.xml";
+                            Console.Write("Jepni fjalekalimin:");
+                            string password = Console.ReadLine();
+                            Login_user.Login(args[1], password);
+                        }
+                    }
+                    catch 
+                    {
+                        Console.WriteLine("Kerkesa duhet te jete: login <username>");
+                        return;
+                    }
+                }
+                else if (command == "status")
+                {
+                    try
+                    {
+                        if (args[1].Length != 0)
+                        {
+                            Login_user.Status(args[1]);
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Kerkesa duhet te jete: status <token>");
+                        return;
+                    }
+                }
+		    ///
+		    
                 else if (command == "export-key")
                 {
                     try
