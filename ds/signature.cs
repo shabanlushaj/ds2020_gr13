@@ -1,40 +1,50 @@
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace ds
 {
-    class signature
+    class Signature
     {
-
-        private static readonly RSACryptoServiceProvider objRsa = new RSACryptoServiceProvider();
-
-
-        private string Sign_data(string plain)
+        public string Compute_hash(string plaintext)
         {
-
-            byte[] bytePlaintexti = Encoding.UTF8.GetBytes(plain);
-            byte[] byteSignedText = objRsa.SignData(bytePlaintexti, new SHA1CryptoServiceProvider());
-
-            string signature = Convert.ToBase64String(byteSignedText);
-            return signature;
+            SHA256CryptoServiceProvider sObj = new SHA256CryptoServiceProvider();
+            byte[] pByte = Encoding.UTF8.GetBytes(plaintext);
+            byte[] hByte = sObj.ComputeHash(pByte);
+            string hValue = Convert.ToBase64String(hByte);
+            return hValue;
         }
 
-
-        private void Verify_sign(string plain, string data)
+        public string Sign_data(string plain)
         {
-            byte[] bsd = Convert.FromBase64String(data);
-            byte[] bytePlaintexti = Encoding.UTF8.GetBytes(plain);
+            byte[] hashOfDataToSign = Convert.FromBase64String(plain);
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                string user = File.ReadAllText(@"C:\Users\Admin\Desktop\edon.xml");//only for example
+                rsa.FromXmlString(user);
+                var rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
+                rsaFormatter.SetHashAlgorithm("SHA256");
 
-            bool Verified = objRsa.VerifyData(bytePlaintexti, new SHA1CryptoServiceProvider(), bsd);
-
-            if (Verified)
-                Console.WriteLine("Nenshkrimi eshte valid!");
-            else
-                Console.WriteLine("Nenshkrimi NUK eshte valid!");
+                byte[] rf = rsaFormatter.CreateSignature(hashOfDataToSign);
+                string sdata = Convert.ToBase64String(rf);
+                return sdata;
+            }
         }
+        public bool Verify_sign(string plain, string data)
+        {
+            byte[] hashOfDataToSign = Convert.FromBase64String(plain);
+            byte[] signature = Convert.FromBase64String(data);
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                string user = File.ReadAllText(@"C:\Users\Admin\Desktop\edon.pub.xml");//only for example
+                rsa.FromXmlString(user);
+                var rsaDeformatter = new RSAPKCS1SignatureDeformatter(rsa);
+                rsaDeformatter.SetHashAlgorithm("SHA256");
 
-       
+                return rsaDeformatter.VerifySignature(hashOfDataToSign, signature);
+            }
+        }
+        
     }
 }
