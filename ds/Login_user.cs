@@ -55,6 +55,10 @@ namespace ds
                         string tokenn = token;
                         Console.WriteLine("Token: " + tokenn);
                     }
+                    else 
+                    {
+                        Console.WriteLine("Gabim: " + "Fjalekalimi i gabuar.");
+                    }
                 }
             }
             catch (Exception e)
