@@ -107,6 +107,7 @@ $ ds status eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyIgVXNlciAiOiJlZG9uIiwiIFNrYWR
 
 " User ":"edon"
 " Skadimi ":"2020-06-07 04:31 am"
+'Valid' : 'Po'
 ```
 
 5. Extended 3rd method from the 2nd task :  Added -> Signature message, if token is valid
