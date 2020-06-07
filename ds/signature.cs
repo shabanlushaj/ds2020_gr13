@@ -58,7 +58,9 @@ namespace ds
                 string hash = Compute_hash(msg_des);
                 string msg_sign = Sign_data(hash,user);
                 string msg_b64 = WR.Base64Encode(msg_sign);
-                return msg_b64;
+                string sender = GetSender(token);
+                string part4 = sender + "." + msg_b64;
+                return part4;
             }
             else
             {
@@ -91,7 +93,7 @@ namespace ds
         }
 
         //net-informations.com
-        private static bool isExpired(string token)
+        public bool isExpired(string token)
         {
             int indexOfFirstPoint = token.IndexOf('.') + 1;
             string toDecode = token.Substring(indexOfFirstPoint, token.LastIndexOf('.') - indexOfFirstPoint);

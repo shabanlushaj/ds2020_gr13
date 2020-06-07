@@ -19,6 +19,7 @@ namespace ds
 
                 RsaEncryptor rsa;
                 DirectoryInfo di = Directory.CreateDirectory(@"../../../keys/");
+                Signature sign = new Signature();
 
                 if (command == "create-user")
                 {
@@ -253,6 +254,15 @@ namespace ds
                         if (args[1].Length != 0)
                         {
                             Login_user.Status(args[1]);
+                            if (sign.isExpired(args[1]))
+                            {
+                                Console.WriteLine("'Valid' : 'Po'");
+                            }
+                            else
+                            {
+                                Console.WriteLine("'Valid' : 'Jo'");
+                            }
+                            
                         }
                     }
                     catch
@@ -290,10 +300,9 @@ namespace ds
                             string publicKey = File.ReadAllText(di + input + ".pub.xml");
                             string tekst = args[2];
                             string token = args[3];
-                            Signature  sign = new Signature();
                             string part4 = sign.Sender(token, tekst, input, randKey, randiv);
                             string sender = sign.GetSender(token);
-                            Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv)+"."+sender+"."+part4);
+                            Console.WriteLine(WR.Base64Encode(input) + "." + WR.Base64Encode(randiv) + "." + WR.rsa_Encrypt(randKey, publicKey) + "." + WR.des_Encrypt(tekst, randKey, randiv)+"."+part4);
                         }
                         else
                         {
@@ -393,7 +402,6 @@ namespace ds
                                         Console.WriteLine("Derguesi: {0} ", sender_n);
                                         try
                                         {
-                                            Signature sign = new Signature();
                                             string read_msg = sign.Ver_msg(msg, plain, input, rsaKey_get, iv_get);
                                             Console.WriteLine("Validimi: {0}", read_msg);
                                         }
