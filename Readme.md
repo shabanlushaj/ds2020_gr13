@@ -61,7 +61,7 @@ create an alias to call it simplier:
 
 ```$ alias ds=./ds.exe```
 
-### 1ST TASK  
+### 3RD TASK  
 
 1.1. Added password and storage saved in db
 
@@ -246,7 +246,7 @@ Celesi publik u ruajt ne fajllin 'keys/httpimport.pub.xml'
 
 1.1. Encrypt
 
-##### ```$ ds <four-square> <encrypt> <plaintext> <firstkey> <secondkey>```
+##### ```<four-square> <encrypt> <plaintext> <firstkey> <secondkey>```
 
 ``` 
 $ ds four-square encrypt "takohemi neser" siguria dhenave
@@ -255,7 +255,7 @@ Encryption: nndoeelbmetepw
 
 1.2. Decrypt
 
-##### ```$ ds <four-square> <decrypt> <ciphertext> <firstkey> <secondkey>```
+##### ```<four-square> <decrypt> <ciphertext> <firstkey> <secondkey>```
 
 ``` 
 $ ds four-square decrypt "nndoeelbmetepw" siguria dhenave
@@ -266,7 +266,7 @@ Decryption: takohemineserx
 
 2.1. Lower case
 
-##### ``` $ ds <case> <lower> <sentence>```
+##### ```<case> <lower> <sentence>```
 
 ``` 
 $ ds case lower "Pershendetje nga Fiek"
@@ -275,7 +275,7 @@ pershendetje nga fiek
 
 2.2. Upper case
 
-##### ``` $ ds <case> <upper> <sentence>```
+##### ```<case> <upper> <sentence>```
 
 ``` 
 $ ds case upper "Pershendetje nga Fiek"
@@ -284,7 +284,7 @@ PERSHENDETJE NGA FIEK
 
 2.3. Alternating
 
-##### ``` $ ds <case> <alternating> <sentence>```
+##### ```<case> <alternating> <sentence>```
 
 ``` 
 $ ds case alternating "Pershendetje nga Fiek"
@@ -293,7 +293,7 @@ pErShEnDeTjE NgA FiEk
 
 2.4. Inverse
 
-##### ``` $ ds <case> <inverse> <sentence>```
+##### ```<case> <inverse> <sentence>```
 
 ``` 
 $ ds case inverse "Pershendetje nga Fiek"
@@ -302,7 +302,7 @@ pERSHENDETJE NGA fIEK
 
 2.5. Capitalize
 
-##### ``` $ ds <case> <capitalize> <sentence>```
+##### ```<case> <capitalize> <sentence>```
 
 ```
 $ ds case capitalize "Pershendetje nga Fiek"
@@ -315,7 +315,7 @@ Pershendetje Nga Fiek
 
 3.1 ENCRYPT
 
-##### ``` $ ds <rail-fence> <encrypt> <ciphertext> <rails>```
+##### ```<rail-fence> <encrypt> <ciphertext> <rails>```
 
 ``` 
 $ ds rail-fence encrypt "takohemi neser" 3
@@ -323,7 +323,7 @@ tomneahierke s
 ```
 
 ##### references : stackoverflow.com, informit.com, [docs.microsoft] , [stephenhaunts], [jwt]
-[docs.microsoft.com]:https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.rsacryptoserviceprovider?view=netcore-3.1
+[docs.microsoft]:https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.rsacryptoserviceprovider?view=netcore-3.1
 [stephenhaunts]:https://stephenhaunts.com/2014/11/23/cryptography-in-net-digital-signatures/
 [jwt]:https://github.com/jwt-dotnet/jwt
 

@@ -26,7 +26,6 @@ namespace ds
             using (var rsa = new RSACryptoServiceProvider(2048))
             {
                 string user = File.ReadAllText(di+input+".xml");
-               // Console.WriteLine(user);
                 rsa.FromXmlString(user);
                 var rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
                 rsaFormatter.SetHashAlgorithm("SHA256");
@@ -75,7 +74,6 @@ namespace ds
             string msg_b64 = WR.Base64Encode(msg_sign);
             if (cipher.Equals(msg_b64))
             {
-                //Console.WriteLine("Perputhen");
                 bool verify = Verify_sign(hash, msg_sign,user1);
                 if (verify)
                 {

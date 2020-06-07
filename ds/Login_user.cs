@@ -36,7 +36,6 @@ namespace ds
 
                     StringBuilder sb = new StringBuilder();
                     byte[] DbSaltt = Convert.FromBase64String(DbSalt);
-                    // same method as at create-user to get the passHashSalt
                     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(password: password,
                                                                                salt: DbSaltt,
                                                                                prf: KeyDerivationPrf.HMACSHA1,
@@ -46,12 +45,10 @@ namespace ds
                     {
 
                         var now = DateTime.UtcNow;
-                        string[] secret = new string[1] { /*publicKey*/ "Sun" };
                         string privateKey = File.ReadAllText(di + username + ".xml");
                         rsaObj.FromXmlString(privateKey);
                         var token = new JwtBuilder()
                         .WithAlgorithm(new RS256Algorithm(rsaObj,rsaObj))
-                     //   .WithSecret(secret)
                         .AddClaim(" User ", username)
                         .AddClaim(" Skadimi ", DateTime.Now.AddMinutes(20).ToString("yyyy-MM-dd HH:mm tt"))
                         .Encode();
@@ -75,15 +72,12 @@ namespace ds
             {
                 var now = DateTime.UtcNow;
 
-                //string[] secret = new string[1] { "Sun" };
-                //Console.WriteLine("");
                 
                 string[] secret = new string[1] { "Sun" };
                 string pubKey = File.ReadAllText(di + username + ".pub.xml");
                 rsaObj.FromXmlString(pubKey);
                 var json = new JwtBuilder()
                 .WithAlgorithm(new RS256Algorithm(rsaObj,rsaObj)) // 
-              //  .WithSecret(secret)
                 .MustVerifySignature()
                 .Decode(token);
                 string t = json;

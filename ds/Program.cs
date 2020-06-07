@@ -93,16 +93,12 @@ namespace ds
                                 return;
                             }
 
-                            //////////////////////////////////
-
                             byte[] salt = new byte[128 / 8];
                             using (var rng = RandomNumberGenerator.Create())
                             {
                                 rng.GetBytes(salt);
                             }
                             string Salt = Convert.ToBase64String(salt);
-                            //Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
-
                             // derive a 256-bit subkey (use HMACSHA1 with 10,000 iterations)
                             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                                 password: password,
@@ -110,10 +106,7 @@ namespace ds
                                 prf: KeyDerivationPrf.HMACSHA1,
                                 iterationCount: 10000,
                                 numBytesRequested: 256 / 8));
-                            // Console.WriteLine($"Hashed: {hashed}");
-                            ///////////////////////////////////////
-                            ///////////////////////////////////////
-                            //DataBase
+                          
                             string connStr = "server=localhost;user=root;database=ds;port=3306;password=7834";
                             MySqlConnection conn = new MySqlConnection(connStr);
                             try
@@ -268,8 +261,6 @@ namespace ds
                         return;
                     }
                 }
-                ///
-
 
 
                 else if (command == "write-message")
@@ -298,9 +289,7 @@ namespace ds
                         {
                             string publicKey = File.ReadAllText(di + input + ".pub.xml");
                             string tekst = args[2];
-                            //string sender = args[3];
                             string token = args[3];
-                           // string message = "get from token";
                             Signature  sign = new Signature();
                             string part4 = sign.Sender(token, tekst, input, randKey, randiv);
                             string sender = sign.GetSender(token);
