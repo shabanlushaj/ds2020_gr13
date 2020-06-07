@@ -1,5 +1,7 @@
 using System;
 using System.Data;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using JWT.Algorithms;
 using JWT.Builder;
@@ -12,6 +14,8 @@ namespace ds
 {
     class Login_user
     {
+        private static RSACryptoServiceProvider rsaObj = new RSACryptoServiceProvider();
+        private static DirectoryInfo di = Directory.CreateDirectory(@"../../../keys/");
         public static void Login(string username, string password)
         {
             string connectionstring = "server=localhost;user=root;database=ds;port=3306;password=7834";
@@ -43,10 +47,11 @@ namespace ds
 
                         var now = DateTime.UtcNow;
                         string[] secret = new string[1] { /*publicKey*/ "Sun" };
-                                             
+                        string privateKey = File.ReadAllText(di + username + ".xml");
+                        rsaObj.FromXmlString(privateKey);
                         var token = new JwtBuilder()
-                        .WithAlgorithm(new HMACSHA256Algorithm())
-                        .WithSecret(secret)
+                        .WithAlgorithm(new RS256Algorithm(rsaObj,rsaObj))
+                     //   .WithSecret(secret)
                         .AddClaim(" User ", username)
                         .AddClaim(" Skadimi ", DateTime.Now.AddMinutes(20).ToString("yyyy-MM-dd HH:mm tt"))
                         .Encode();
@@ -62,16 +67,23 @@ namespace ds
         }
         public static void Status(string token)
         {
+            Signature sign = new Signature();
+            string uname = sign.GetSender(token);
+            string username = WR.Base64Decode(uname);
+            Console.WriteLine(username);
             try
             {
                 var now = DateTime.UtcNow;
 
                 //string[] secret = new string[1] { "Sun" };
-                Console.WriteLine("");
+                //Console.WriteLine("");
+                
                 string[] secret = new string[1] { "Sun" };
+                string pubKey = File.ReadAllText(di + username + ".pub.xml");
+                rsaObj.FromXmlString(pubKey);
                 var json = new JwtBuilder()
-                .WithAlgorithm(new HMACSHA256Algorithm()) // 
-                .WithSecret(secret)
+                .WithAlgorithm(new RS256Algorithm(rsaObj,rsaObj)) // 
+              //  .WithSecret(secret)
                 .MustVerifySignature()
                 .Decode(token);
                 string t = json;
