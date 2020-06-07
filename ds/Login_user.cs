@@ -30,7 +30,7 @@ namespace ds
             {
                 objAdapter.Fill(ds);
                 //string privateKey = File.ReadAllText(di + username + ".xml");
-                if (File.Exists(".. / .. / .. / keys /" + username + ".xml"))
+                if (File.Exists(di + username + ".xml"))
                 {
 
                     if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -58,6 +58,10 @@ namespace ds
                             .Encode();
                             string tokenn = token;
                             Console.WriteLine("Token: " + tokenn);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Gabim: Passwordi i shtypur nuk eshte i sakte.");
                         }
                     }
                 }
