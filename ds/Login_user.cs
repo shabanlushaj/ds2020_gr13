@@ -80,7 +80,6 @@ namespace ds
             Signature sign = new Signature();
             string uname = sign.GetSender(token);
             string username = WR.Base64Decode(uname);
-            Console.WriteLine(username);
             try
             {
                 var now = DateTime.UtcNow;
