@@ -28,6 +28,11 @@ Go to folder 'ds':
 
 ```$ cd ./ds/```
 
+Dependencies: 
+
+```$ dotnet add package JWT --version 7.2.1```
+
+```$ dotnet add package MySql.Data --version 8.0.20```
 
 Run program:
 
@@ -219,14 +224,14 @@ Celesi publik u ruajt ne fajllin edonExp.pub.xml
 
 ```
 $ ds import-key imported  C:\Users\Admin\Desktop\toImport.xml
-Celesi privat u ruajt ne fajllin ../../../keys/imported.xml
-Celesi publik u ruajt ne fajllin ../../../keys/imported.pub.xml
+Celesi privat u ruajt ne fajllin 'keys/imported.xml'
+Celesi publik u ruajt ne fajllin 'keys/imported.pub.xml'
 ```
 
 ```
 $ ds import-key httpimport https://pastebin.com/raw/nvSFtXAd
-Celesi privat u ruajt ne fajllin ../../../keys/httpimport.xml
-Celesi publik u ruajt ne fajllin ../../../keys/httpimport.pub.xml
+Celesi privat u ruajt ne fajllin 'keys/httpimport.xml'
+Celesi publik u ruajt ne fajllin 'keys/httpimport.pub.xml'
 ```
 
 7. List - keys //shtese
@@ -237,66 +242,88 @@ Celesi publik u ruajt ne fajllin ../../../keys/httpimport.pub.xml
 ### 1ST TASK
 
 
-### KOMANDA FOUR SQUARE;
+1. Four-square cipher 
 
-#### Nenkomanda encrypt;
+1.1. Encrypt
+
+##### ```$ ds <four-square> <encrypt> <plaintext> <firstkey> <secondkey>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds four-square encrypt "takohemi neser" siguria dhenave
-    Encryption: nndoeelbmetepw
+$ ds four-square encrypt "takohemi neser" siguria dhenave
+Encryption: nndoeelbmetepw
  ```
 
-#### Nenkomanda decrypt
+1.2. Decrypt
+
+##### ```$ ds <four-square> <decrypt> <ciphertext> <firstkey> <secondkey>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds four-square decrypt "nndoeelbmetepw" siguria dhenave
-    Decryption: takohemineserx
+$ ds four-square decrypt "nndoeelbmetepw" siguria dhenave
+Decryption: takohemineserx
 ```
 
-### KOMANDA CASE;
+2. Manipulation with strings - Case
 
-#### LOWER;
+2.1. Lower case
+
+##### ``` $ ds <case> <lower> <sentence>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds case lower "Pershendetje nga Fiek"
-    pershendetje nga fiek
+$ ds case lower "Pershendetje nga Fiek"
+pershendetje nga fiek
 ```
 
-#### UPPER;
+2.2. Upper case
+
+##### ``` $ ds <case> <upper> <sentence>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds case upper "Pershendetje nga Fiek"
-    PERSHENDETJE NGA FIEK
+$ ds case upper "Pershendetje nga Fiek"
+PERSHENDETJE NGA FIEK
 ```
 
-#### ALTERNATING;
+2.3. Alternating
+
+##### ``` $ ds <case> <alternating> <sentence>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds case alternating "Pershendetje nga Fiek"
-    pErShEnDeTjE NgA FiEk
+$ ds case alternating "Pershendetje nga Fiek"
+pErShEnDeTjE NgA FiEk
 ```
 
-#### INVERSE;
+2.4. Inverse
+
+##### ``` $ ds <case> <inverse> <sentence>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds case inverse "Pershendetje nga Fiek"
-    pERSHENDETJE NGA fIEK
+$ ds case inverse "Pershendetje nga Fiek"
+pERSHENDETJE NGA fIEK
 ```
 
-#### CAPITALIZE
-``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds case capitalize "Pershendetje nga Fiek"
-    Pershendetje Nga Fiek
+2.5. Capitalize
+
+##### ``` $ ds <case> <capitalize> <sentence>```
+
+```
+$ ds case capitalize "Pershendetje nga Fiek"
+Pershendetje Nga Fiek
 ```
 
-#### SENTENCE;
+
+
+3. Rail-fence cipher
+
+3.1 ENCRYPT
+
+##### ``` $ ds <rail-fence> <encrypt> <ciphertext> <rails>```
+
 ``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds case sentence "Pershendetje nga Fiek"
-    pershendetje nga fiek, PershenDetje nga fiek. PERSHENDETJE NGA FIEK! peRshenDetjE nga fiek.
-    Pershendetje nga fiek, pershendetje nga fiek. Pershendetje nga fiek! Pershendetje nga fiek.
-```
-### KOMANDA RAIL-FENCE
-
-#### ENCRYPT
-``` 
-    C:\Users\Admin\Desktop\MOST_IMPORTANT\ds\bin\Debug\netcoreapp3.1>ds rail-fence encrypt "takohemi neser" 3
-   tomneahierke s
+$ ds rail-fence encrypt "takohemi neser" 3
+tomneahierke s
 ```
 
-##### from internet : stackoverflow.com informit.com etc
-
+##### references : stackoverflow.com, informit.com, [docs.microsoft] , [stephenhaunts], [jwt]
+[docs.microsoft.com]:https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.rsacryptoserviceprovider?view=netcore-3.1
+[stephenhaunts]:https://stephenhaunts.com/2014/11/23/cryptography-in-net-digital-signatures/
+[jwt]:https://github.com/jwt-dotnet/jwt
 

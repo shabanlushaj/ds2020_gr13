@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Renci.SshNet.Security.Cryptography;
 
 namespace ds
 {

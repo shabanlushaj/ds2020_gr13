@@ -34,7 +34,10 @@ namespace ds
                     byte[] DbSaltt = Convert.FromBase64String(DbSalt);
                     // same method as at create-user to get the passHashSalt
                     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(password: password,
-                                                                                salt: DbSaltt,
+                                                                               salt: DbSaltt,
+                                                                               prf: KeyDerivationPrf.HMACSHA1,
+                                                                               iterationCount: 10000,
+                                                                               numBytesRequested: 256 / 8));
                     if (DbPassword.Equals(hashed))
                     {
 
