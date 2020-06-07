@@ -29,36 +29,41 @@ namespace ds
             try
             {
                 objAdapter.Fill(ds);
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                //string privateKey = File.ReadAllText(di + username + ".xml");
+                if (File.Exists(".. / .. / .. / keys /" + username + ".xml"))
                 {
-                    string DbPassword = ds.Tables[0].Rows[0]["Password"].ToString();
-                    string DbSalt = ds.Tables[0].Rows[0]["Salt"].ToString();
 
-                    StringBuilder sb = new StringBuilder();
-                    byte[] DbSaltt = Convert.FromBase64String(DbSalt);
-                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(password: password,
-                                                                               salt: DbSaltt,
-                                                                               prf: KeyDerivationPrf.HMACSHA1,
-                                                                               iterationCount: 10000,
-                                                                               numBytesRequested: 256 / 8));
-                    if (DbPassword.Equals(hashed))
+                    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                     {
+                        string DbPassword = ds.Tables[0].Rows[0]["Password"].ToString();
+                        string DbSalt = ds.Tables[0].Rows[0]["Salt"].ToString();
 
-                        var now = DateTime.UtcNow;
-                        string privateKey = File.ReadAllText(di + username + ".xml");
-                        rsaObj.FromXmlString(privateKey);
-                        var token = new JwtBuilder()
-                        .WithAlgorithm(new RS256Algorithm(rsaObj,rsaObj))
-                        .AddClaim(" User ", username)
-                        .AddClaim(" Skadimi ", DateTime.Now.AddMinutes(20).ToString("yyyy-MM-dd HH:mm tt"))
-                        .Encode();
-                        string tokenn = token;
-                        Console.WriteLine("Token: " + tokenn);
+                        StringBuilder sb = new StringBuilder();
+                        byte[] DbSaltt = Convert.FromBase64String(DbSalt);
+                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(password: password,
+                                                                                   salt: DbSaltt,
+                                                                                   prf: KeyDerivationPrf.HMACSHA1,
+                                                                                   iterationCount: 10000,
+                                                                                   numBytesRequested: 256 / 8));
+                        if (DbPassword.Equals(hashed))
+                        {
+
+                            var now = DateTime.UtcNow;
+                            string privateKey = File.ReadAllText(di + username + ".xml");
+                            rsaObj.FromXmlString(privateKey);
+                            var token = new JwtBuilder()
+                            .WithAlgorithm(new RS256Algorithm(rsaObj, rsaObj))
+                            .AddClaim(" User ", username)
+                            .AddClaim(" Skadimi ", DateTime.Now.AddMinutes(20).ToString("yyyy-MM-dd HH:mm tt"))
+                            .Encode();
+                            string tokenn = token;
+                            Console.WriteLine("Token: " + tokenn);
+                        }
                     }
-                    else 
-                    {
-                        Console.WriteLine("Gabim: " + "Fjalekalimi i gabuar.");
-                    }
+                }
+                else
+                {
+                    Console.WriteLine("Gabim: " + "Shfrytezuesi nuk ekziston.");
                 }
             }
             catch (Exception e)
