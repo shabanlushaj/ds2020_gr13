@@ -1,7 +1,7 @@
 
 ## DATASECURITY - project
 
-### 2ND TASK  
+
 
 
 #### Compile and excecute:
@@ -56,6 +56,77 @@ create an alias to call it simplier:
 
 ```$ alias ds=./ds.exe```
 
+### 1ST TASK  
+
+1.1. Added password and storage saved in db
+
+##### ```<create-user> <user-name>```
+
+```
+$ ds create-user edon
+Jepni fjalekalimin:Fiek2020.
+Perserite fjalekalimin:Fiek2020.
+Eshte krijuar shfrytezuesi 'edon'
+Eshte krijuar celsi privat: 'keys/edon.xml'
+Eshte krijuar celsi publik: 'keys/edon.pub.xml'
+```
+
+2.1. Deletes also db records
+
+##### ```<delete-user> <user-name>```
+
+```
+$ ds delete-user edon
+Eshte larguar celsi privat: 'keys/edon.xml'
+Eshte larguar celsi publik: 'keys/edon.pub.xml'
+Eshte fshire shfrytezuesi 'edon'
+```
+
+3. Authenticate user, issue a token
+
+##### ``` <login> <user-name>```
+
+```
+$ ds login edon
+Jepni fjalekalimin:Fiek2020.
+Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyIgVXNlciAiOiJlZG9uIiwiIFNrYWRpbWkgIjoiMjAyMC0wNi0wNyAwNDozMSBhbSJ9.8jKn6DaqjwkI4iM5OAZ03dlcijm1w-ODTx5LKahPwAg
+
+```
+
+4. Shows the status of the token
+
+##### ``` <status> <token>```
+
+```
+$ ds status eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyIgVXNlciAiOiJlZG9uIiwiIFNrYWRpbWkgIjoiMjAyMC0wNi0wNyAwNDozMSBhbSJ9.8jKn6DaqjwkI4iM5OAZ03dlcijm1w-ODTx5LKahPwAg
+
+" User ":"edon"
+" Skadimi ":"2020-06-07 04:31 am"
+```
+
+5. Extended 3rd method from the 2nd task :  Added -> Signature message, if token is valid
+
+##### ```<write-message> <user-name> <text> <token>```
+
+```
+$ ds write-message blerim "takohemi neser" eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyIgVXNlciAiOiJlZG9uIiwiIFNrYWRpbWkgIjoiMjAyMC0wNi0wNyAwNDozMSBhbSJ9.8jKn6DaqjwkI4iM5OAZ03dlcijm1w-ODTx5LKahPwAg
+
+Ymxlcmlt.VGVlRWJPeFlrYUE9.Gdo0Ut3o1cSDQfQaLL3SgLbUuV39f/i6c68whUYnPWS4o0RDyTI2ivfhIGnN71F+NLRH11v5TkXxm09/LrGc4m3bnQPDRS0xfvp7LqGr2Tiz5RqEJgoJceSqy3R9Zr3/cZMgErua65UZOl0tKWRzZejqDRXoZXHNF4gD3ab7GKQ=.QYzMeyTtugPvGYXA2pz6iw==.ZWRvbg==.ZXRrUWRjVXpqbXppazdObkwxaDlSK3psdVVPY2VxZTNPQnhwR21yQ25Yd3FKdHhkc0ljM0Q1Q2ZFRjdTMUw1anJhcXJQRGM5SjJWWkJDUHlEQi9TOHlnZklBZzZqU0hPOHpOdDJEZ21YVjNhTjV0amJHeC9EU3Z0bGNYTEtzVFhBeTZFYXNCalVGbFF2b2luMGJaWWwwZDh6M1MxMm5Vb3ordzllSmhBR1BVPQ==
+```
+
+6. Extended 4th method from the 2nd task : Added -> Checks if signature is valid
+
+##### ```<read-message> <cipher>```
+
+```
+$ ds read-message Ymxlcmlt.VGVlRWJPeFlrYUE9.Gdo0Ut3o1cSDQfQaLL3SgLbUuV39f/i6c68whUYnPWS4o0RDyTI2ivfhIGnN71F+NLRH11v5TkXxm09/LrGc4m3bnQPDRS0xfvp7LqGr2Tiz5RqEJgoJceSqy3R9Zr3/cZMgErua65UZOl0tKWRzZejqDRXoZXHNF4gD3ab7GKQ=.QYzMeyTtugPvGYXA2pz6iw==.ZWRvbg==.ZXRrUWRjVXpqbXppazdObkwxaDlSK3psdVVPY2VxZTNPQnhwR21yQ25Yd3FKdHhkc0ljM0Q1Q2ZFRjdTMUw1anJhcXJQRGM5SjJWWkJDUHlEQi9TOHlnZklBZzZqU0hPOHpOdDJEZ21YVjNhTjV0amJHeC9EU3Z0bGNYTEtzVFhBeTZFYXNCalVGbFF2b2luMGJaWWwwZDh6M1MxMm5Vb3ordzllSmhBR1BVPQ==
+Marresi: blerim
+Mesazhi: takohemi neser
+Derguesi: edon
+Validimi: Nenshkrimi eshte valid.
+```
+
+### 2ND TASK  
 
 1. Generates a pair of private and public keys. XML-format
 
@@ -70,19 +141,8 @@ $ ds create-user edon
 Gabim: Celesi 'edon' ekziston paraprakisht.
 ```
 
-1.1 Password,DataBase & Hash-Salt
-##### ```<create-user> <user-name>```
-```Start Amache & MySQL
-ds create-user Fiek
-Jepni fjalekalimin:Fiek.11
-Perserite fjalekalimin:Fiek.11
-Eshte krijuar shfrytezuesi 'Fiek'
-Eshte krijuar celsi privat: 'keys/Fiek.xml'
-Eshte krijuar celsi publik: 'keys/Fiek.pub.xml'
 
-```
-
-2. Deletes a pair of private and public keys.
+2. Deletes user's pair of private and public keys.
 
 ##### ```<delete-user> <user-name>```
 
@@ -93,14 +153,6 @@ Eshte larguar celsi publik: 'keys/edon.pub.xml'
 
 $ ds delete-user edon
 Gabim: Celesi 'edon' nuk ekziston.
-```
-2.2 Delete keys and data from DataBase
-##### ```<delete-user> <user-name>```
-```Start Amache & MySQL
-ds delete-user Fiek
-Eshte larguar celsi privat: 'keys/Fiek.xml'
-Eshte larguar celsi publik: 'keys/Fiek.pub.xml'
-Eshte fshire shfrytezuesi 'Fiek'
 ```
 
 3. Encrypts a message with users public key.
@@ -118,7 +170,7 @@ Mesazhi i enkriptuar u ruajt ne fajllin: files/edon.txt
 
 4. Decrypts a message with users private key.
 
-##### ```<read-message> <text>```
+##### ```<read-message> <cipher>```
 
 ```
 $ ds read-message ZWRvbg==.aUZsRUw1ZWVzOGM9.hxuqnLr1pZz43JokZu0UTfeM7aFOVH/yUVOoz9ksTWXBodWJko2YDhiHvKRCSTvpPumKqZU7lUJI98BzV6ZlM8azC2TaHp1lRpM4OBm0vUtyxzSjoELKePJcnCqGPRpK4lM6IHHd8BgaOm1UJFPwKF47Meu09PEBkfDmPHIWeVg=.taWPUz0ks2LWTc6RrRBesYDiTxGymgti1bMxuZTWZB5/RxxFz9Q+qQ==

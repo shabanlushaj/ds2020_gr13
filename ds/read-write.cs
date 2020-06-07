@@ -106,7 +106,5 @@ namespace ds
             return (check.Length % 4 == 0) && Regex.IsMatch(check, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
 
         }
-
-
     }
 }

@@ -14,7 +14,7 @@ namespace ds
     {
         public static void Login(string username, string password)
         {
-            string connectionstring = "server=localhost;user=root;database=csharp;port=3306;password=";
+            string connectionstring = "server=localhost;user=root;database=ds;port=3306;password=7834";
             MySqlConnection con = new MySqlConnection(connectionstring);
             string mysqlStatement = "select * from db where User = '" + username + "'";
             MySqlCommand commands = new MySqlCommand(mysqlStatement, con);
@@ -35,24 +35,17 @@ namespace ds
                     // same method as at create-user to get the passHashSalt
                     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(password: password,
                                                                                 salt: DbSaltt,
-                                                                                prf: KeyDerivationPrf.HMACSHA1,
-                                                                                iterationCount: 10000,
-                                                                                numBytesRequested: 256 / 8));
-
                     if (DbPassword.Equals(hashed))
                     {
 
                         var now = DateTime.UtcNow;
-                        //DirectoryInfo di = Directory.CreateDirectory(@"../../../keys/");
-                        //string publicKey = File.ReadAllText(di + username + ".pub.xml");
                         string[] secret = new string[1] { /*publicKey*/ "Sun" };
                                              
                         var token = new JwtBuilder()
                         .WithAlgorithm(new HMACSHA256Algorithm())
                         .WithSecret(secret)
                         .AddClaim(" User ", username)
-                        .AddClaim(" Skadimi ", DateTime.Now.AddMinutes(20).ToString("MM/dd/yyyy HH:mm:ss"))
-                        //.ExpirationTime(now.AddMinutes(20).ToLocalTime())
+                        .AddClaim(" Skadimi ", DateTime.Now.AddMinutes(20).ToString("yyyy-MM-dd HH:mm tt"))
                         .Encode();
                         string tokenn = token;
                         Console.WriteLine("Token: " + tokenn);
@@ -72,7 +65,6 @@ namespace ds
 
                 //string[] secret = new string[1] { "Sun" };
                 Console.WriteLine("");
-                //var token = new JwtBuilder()
                 string[] secret = new string[1] { "Sun" };
                 var json = new JwtBuilder()
                 .WithAlgorithm(new HMACSHA256Algorithm()) // 
